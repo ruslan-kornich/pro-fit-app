@@ -1,0 +1,63 @@
+from enum import Enum
+from typing import Optional
+
+
+class Gender(str, Enum):
+    MALE = "male"
+    FEMALE = "female"
+
+
+class ActivityLevel(float, Enum):
+    SEDENTARY = 1.2
+    LIGHTLY_ACTIVE = 1.375
+    MODERATELY_ACTIVE = 1.55
+    VERY_ACTIVE = 1.725
+    EXTRA_ACTIVE = 1.9
+
+
+def calculate_bmr(
+    weight_kg: float,
+    height_cm: float,
+    age_years: int,
+    gender: Gender
+) -> float:
+    """
+    Calculate Basal Metabolic Rate using Mifflin-St Jeor equation.
+
+    Men: BMR = (10 × weight) + (6.25 × height) - (5 × age) + 5
+    Women: BMR = (10 × weight) + (6.25 × height) - (5 × age) - 161
+    """
+    base_bmr = (10 * weight_kg) + (6.25 * height_cm) - (5 * age_years)
+
+    if gender == Gender.MALE:
+        return base_bmr + 5
+    else:
+        return base_bmr - 161
+
+
+def calculate_daily_calorie_norm(
+    weight_kg: Optional[float],
+    height_cm: Optional[float],
+    age_years: Optional[int],
+    gender: Optional[str],
+    activity_level: Optional[float] = None
+) -> Optional[int]:
+    """
+    Calculate Total Daily Energy Expenditure (TDEE).
+    TDEE = BMR × activity_level
+    """
+    if not all([weight_kg, height_cm, age_years, gender]):
+        return None
+
+    try:
+        gender_enum = Gender(gender.lower()) if gender else None
+        if not gender_enum:
+            return None
+    except ValueError:
+        return None
+
+    bmr = calculate_bmr(weight_kg, height_cm, age_years, gender_enum)
+
+    activity_multiplier = activity_level or ActivityLevel.SEDENTARY.value
+
+    return round(bmr * activity_multiplier)
