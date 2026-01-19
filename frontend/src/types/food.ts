@@ -40,9 +40,40 @@ export interface FoodEntryCreate {
   photo_url?: string | null;
 }
 
+export interface IngredientCreate {
+  name: string;
+  calories: number;
+  protein?: number | null;
+  fat?: number | null;
+  carbs?: number | null;
+  grams?: number | null;
+}
+
+export interface FoodEntryWithIngredientsCreate {
+  name: string;
+  calories: number;
+  protein?: number | null;
+  fat?: number | null;
+  carbs?: number | null;
+  grams?: number | null;
+  photo_url?: string | null;
+  ingredients: IngredientCreate[];
+}
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  calories: number;
+  protein: number | null;
+  fat: number | null;
+  carbs: number | null;
+  grams: number | null;
+}
+
 export interface FoodEntry {
   id: string;
   user_id: string;
+  parent_id: string | null;
   name: string;
   calories: number;
   protein: number | null;
@@ -52,6 +83,7 @@ export interface FoodEntry {
   photo_url: string | null;
   created_at: string;
   updated_at: string;
+  ingredients: Ingredient[];
 }
 
 export interface FoodEntriesListResponse {

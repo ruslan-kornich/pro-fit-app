@@ -13,6 +13,7 @@ from app.models.food_entries import FoodEntryModel
 from app.schemas.food import (
     FoodAnalysisResponse,
     FoodEntryCreate,
+    FoodEntryWithIngredientsCreate,
     FoodEntryResponse,
     DailyStatsResponse,
     RecommendationResponse,
@@ -83,7 +84,37 @@ class FoodService:
             grams=entry_data.grams,
             photo_url=entry_data.photo_url,
         )
-        return entry
+        return await self.food_repository.get_by_id_with_ingredients(entry.id)
+
+    async def create_entry_with_ingredients(
+        self,
+        user_id: UUID,
+        entry_data: FoodEntryWithIngredientsCreate,
+    ) -> FoodEntryModel:
+        parent_entry = await self.food_repository.create(
+            user_id=user_id,
+            name=entry_data.name,
+            calories=entry_data.calories,
+            protein=entry_data.protein,
+            fat=entry_data.fat,
+            carbs=entry_data.carbs,
+            grams=entry_data.grams,
+            photo_url=entry_data.photo_url,
+        )
+
+        for ingredient in entry_data.ingredients:
+            await self.food_repository.create(
+                user_id=user_id,
+                parent_id=parent_entry.id,
+                name=ingredient.name,
+                calories=ingredient.calories,
+                protein=ingredient.protein,
+                fat=ingredient.fat,
+                carbs=ingredient.carbs,
+                grams=ingredient.grams,
+            )
+
+        return await self.food_repository.get_by_id_with_ingredients(parent_entry.id)
 
     async def get_entries(
         self,

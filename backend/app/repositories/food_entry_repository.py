@@ -2,6 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 from datetime import date, datetime, time, timezone, timedelta
 from sqlalchemy import select, func, and_
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.food_entries import FoodEntryModel
@@ -12,6 +13,15 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
     def __init__(self, session: AsyncSession):
         super().__init__(FoodEntryModel, session)
 
+    async def get_by_id_with_ingredients(self, entry_id: UUID) -> Optional[FoodEntryModel]:
+        query = (
+            select(FoodEntryModel)
+            .options(selectinload(FoodEntryModel.ingredients))
+            .where(FoodEntryModel.id == entry_id)
+        )
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
+
     async def get_user_entries(
         self,
         user_id: UUID,
@@ -20,7 +30,16 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         skip: int = 0,
         limit: int = 50,
     ) -> List[FoodEntryModel]:
-        query = select(FoodEntryModel).where(FoodEntryModel.user_id == user_id)
+        query = (
+            select(FoodEntryModel)
+            .options(selectinload(FoodEntryModel.ingredients))
+            .where(
+                and_(
+                    FoodEntryModel.user_id == user_id,
+                    FoodEntryModel.parent_id.is_(None),
+                )
+            )
+        )
 
         if start_date:
             start_datetime = datetime.combine(start_date, time.min, tzinfo=timezone.utc)
@@ -33,7 +52,7 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         query = query.order_by(FoodEntryModel.created_at.desc()).offset(skip).limit(limit)
 
         result = await self.session.execute(query)
-        return list(result.scalars().all())
+        return list(result.scalars().unique().all())
 
     async def count_user_entries(
         self,
@@ -41,7 +60,12 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         start_date: Optional[date] = None,
         end_date: Optional[date] = None,
     ) -> int:
-        query = select(func.count(FoodEntryModel.id)).where(FoodEntryModel.user_id == user_id)
+        query = select(func.count(FoodEntryModel.id)).where(
+            and_(
+                FoodEntryModel.user_id == user_id,
+                FoodEntryModel.parent_id.is_(None),
+            )
+        )
 
         if start_date:
             start_datetime = datetime.combine(start_date, time.min, tzinfo=timezone.utc)
@@ -71,6 +95,7 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         ).where(
             and_(
                 FoodEntryModel.user_id == user_id,
+                FoodEntryModel.parent_id.is_(None),
                 FoodEntryModel.created_at >= start_datetime,
                 FoodEntryModel.created_at <= end_datetime,
             )

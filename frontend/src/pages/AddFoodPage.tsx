@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Card from '../components/Card';
 import Loading from '../components/Loading';
-import { analyzePhotoDetailed, createFoodEntry } from '../api/food';
+import { analyzePhotoDetailed, createFoodEntry, createFoodEntryWithIngredients } from '../api/food';
 import { toast } from '../utils/toast';
 import type { DishAnalysisResponse, FoodItemAnalysis } from '../types/food';
 import { cn } from '../utils/cn';
@@ -94,15 +94,37 @@ export default function AddFoodPage() {
 
     setSaving(true);
     try {
-      await createFoodEntry({
-        name,
-        calories: parseInt(calories, 10),
-        protein: protein ? parseFloat(protein) : null,
-        fat: fat ? parseFloat(fat) : null,
-        carbs: carbs ? parseFloat(carbs) : null,
-        grams: grams ? parseFloat(grams) : null,
-        photo_url: analysis?.photo_url || null,
-      });
+      const selectedItems = editableItems.filter(item => item.selected);
+
+      if (selectedItems.length > 0) {
+        await createFoodEntryWithIngredients({
+          name,
+          calories: parseInt(calories, 10),
+          protein: protein ? parseFloat(protein) : null,
+          fat: fat ? parseFloat(fat) : null,
+          carbs: carbs ? parseFloat(carbs) : null,
+          grams: grams ? parseFloat(grams) : null,
+          photo_url: analysis?.photo_url || null,
+          ingredients: selectedItems.map(item => ({
+            name: item.name,
+            calories: item.calories,
+            protein: item.protein,
+            fat: item.fat,
+            carbs: item.carbs,
+            grams: item.grams,
+          })),
+        });
+      } else {
+        await createFoodEntry({
+          name,
+          calories: parseInt(calories, 10),
+          protein: protein ? parseFloat(protein) : null,
+          fat: fat ? parseFloat(fat) : null,
+          carbs: carbs ? parseFloat(carbs) : null,
+          grams: grams ? parseFloat(grams) : null,
+          photo_url: analysis?.photo_url || null,
+        });
+      }
       toast.success('Food entry saved!');
       navigate('/');
     } catch {

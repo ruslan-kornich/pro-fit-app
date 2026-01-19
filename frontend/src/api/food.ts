@@ -4,6 +4,7 @@ import type {
   DishAnalysisResponse,
   FoodEntry,
   FoodEntryCreate,
+  FoodEntryWithIngredientsCreate,
   FoodEntriesListResponse,
   DailyStats,
   RecommendationResponse,
@@ -35,6 +36,11 @@ export async function analyzePhotoDetailed(file: File): Promise<DishAnalysisResp
 
 export async function createFoodEntry(data: FoodEntryCreate): Promise<FoodEntry> {
   const response = await apiClient.post<FoodEntry>('/food/entries', data);
+  return response.data;
+}
+
+export async function createFoodEntryWithIngredients(data: FoodEntryWithIngredientsCreate): Promise<FoodEntry> {
+  const response = await apiClient.post<FoodEntry>('/food/entries-with-ingredients', data);
   return response.data;
 }
 

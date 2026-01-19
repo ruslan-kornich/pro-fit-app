@@ -24,9 +24,43 @@ class FoodEntryCreate(BaseModel):
     photo_url: Optional[str] = None
 
 
+class IngredientCreate(BaseModel):
+    name: str
+    calories: int
+    protein: Optional[float] = None
+    fat: Optional[float] = None
+    carbs: Optional[float] = None
+    grams: Optional[float] = None
+
+
+class FoodEntryWithIngredientsCreate(BaseModel):
+    name: str
+    calories: int
+    protein: Optional[float] = None
+    fat: Optional[float] = None
+    carbs: Optional[float] = None
+    grams: Optional[float] = None
+    photo_url: Optional[str] = None
+    ingredients: List[IngredientCreate] = []
+
+
+class IngredientResponse(BaseModel):
+    id: UUID
+    name: str
+    calories: int
+    protein: Optional[float] = None
+    fat: Optional[float] = None
+    carbs: Optional[float] = None
+    grams: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+
 class FoodEntryResponse(BaseModel):
     id: UUID
     user_id: UUID
+    parent_id: Optional[UUID] = None
     name: str
     calories: int
     protein: Optional[float] = None
@@ -36,6 +70,7 @@ class FoodEntryResponse(BaseModel):
     photo_url: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+    ingredients: List[IngredientResponse] = []
 
     class Config:
         from_attributes = True

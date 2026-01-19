@@ -10,6 +10,7 @@ from app.services.food_service import FoodService
 from app.schemas.food import (
     FoodAnalysisResponse,
     FoodEntryCreate,
+    FoodEntryWithIngredientsCreate,
     FoodEntryResponse,
     DailyStatsResponse,
     RecommendationResponse,
@@ -79,6 +80,17 @@ async def create_entry(
 ):
     service = FoodService(db)
     created_entry = await service.create_entry(UUID(user_id), entry)
+    return FoodEntryResponse.model_validate(created_entry)
+
+
+@router.post("/entries-with-ingredients", response_model=FoodEntryResponse)
+async def create_entry_with_ingredients(
+    entry: FoodEntryWithIngredientsCreate,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    service = FoodService(db)
+    created_entry = await service.create_entry_with_ingredients(UUID(user_id), entry)
     return FoodEntryResponse.model_validate(created_entry)
 
 
