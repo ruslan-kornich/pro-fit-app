@@ -1,6 +1,7 @@
+from decimal import Decimal
 from typing import Optional, List, TYPE_CHECKING
 from uuid import UUID
-from sqlalchemy import String, Float, Integer, ForeignKey
+from sqlalchemy import String, Integer, ForeignKey, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
@@ -30,10 +31,10 @@ class FoodEntryModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     calories: Mapped[int] = mapped_column(Integer, nullable=False)
-    protein: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    fat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    carbs: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    grams: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    protein: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    fat: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    carbs: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    grams: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     photo_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
 
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="food_entries")

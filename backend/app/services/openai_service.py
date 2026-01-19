@@ -27,17 +27,41 @@ class OpenAIService:
     async def analyze_food_photo(self, image_data: bytes, mime_type: str = "image/jpeg") -> FoodAnalysisResponse:
         base64_image = base64.b64encode(image_data).decode("utf-8")
 
-        prompt = """Analyze this food image. Identify the food and estimate its nutritional content.
-Return a JSON object with the following fields:
-- name: string (name of the food/dish)
-- calories: integer (estimated calories)
-- protein: number (grams of protein)
-- fat: number (grams of fat)
-- carbs: number (grams of carbohydrates)
-- grams: number (estimated portion size in grams)
-- confidence: number (0-1, how confident you are in this analysis)
+        prompt = """You are an expert nutritionist analyzing a food photo.
 
-Only return the JSON object, no additional text."""
+TASK: Identify the food/dish and estimate its total nutritional content with accurate weight.
+
+WEIGHT ESTIMATION REFERENCES:
+- Standard dinner plate = 25-27cm diameter
+- Palm-sized meat/fish = ~100-120g
+- Fist-sized rice/pasta = ~150-180g cooked
+- Deck of cards = ~85g meat
+- Tennis ball = ~130g rice/grains
+- Typical main dish = 200-500g total
+
+ANALYSIS STEPS:
+1. Identify what food/dish is shown (be specific - include cooking method if visible)
+2. Estimate total portion weight in grams using plate size as reference
+3. Calculate nutritional values based on estimated weight
+
+Return ONLY a valid JSON object:
+{
+  "name": "Specific food name with cooking method if applicable",
+  "calories": 350,
+  "protein": 25.0,
+  "fat": 12.0,
+  "carbs": 30.0,
+  "grams": 250,
+  "confidence": 0.85
+}
+
+RULES:
+- Name should be descriptive (e.g., "Grilled salmon fillet with lemon" not just "fish")
+- GRAMS field is critical - estimate realistic total weight of the portion
+- Calculate calories proportionally to weight (e.g., rice = 130kcal/100g, chicken = 165kcal/100g)
+- Include ALL visible components in the calorie count (sauces, oils, sides)
+- Consider cooking method: fried foods have more fat, grilled less
+- Confidence 0.9+ only for clearly identifiable, simple foods"""
 
         try:
             response = await self.client.chat.completions.create(
@@ -57,7 +81,7 @@ Only return the JSON object, no additional text."""
                         ],
                     }
                 ],
-                max_tokens=500,
+                max_completion_tokens=500,
             )
 
             content = response.choices[0].message.content.strip()
@@ -92,34 +116,86 @@ Only return the JSON object, no additional text."""
         logger.info(f"analyze_food_photo_detailed called, image_size={len(image_data)} bytes")
         base64_image = base64.b64encode(image_data).decode("utf-8")
 
-        prompt = """You are a nutrition expert analyzing a food photo.
+        system_prompt = """You are an expert nutritionist and food analyst with 20+ years of experience in visual food recognition and portion estimation. You have extensive knowledge of:
+- International cuisines and their typical ingredients
+- Cooking methods and how they affect nutritional values
+- Visual portion estimation techniques
+- Hidden ingredients (oils, sauces, seasonings)"""
 
-1. First, identify the MAIN DISH name (e.g., "Chicken with rice and salad")
-2. Then break down ALL visible ingredients/components separately
+        user_prompt = """Analyze this food photo carefully and thoroughly.
 
-Return ONLY a valid JSON object:
+STEP 1 - VISUAL ANALYSIS:
+Look at the image and identify:
+- What type of dish is this? (breakfast, lunch, dinner, snack, dessert)
+- What cuisine does it appear to be? (Italian, Asian, American, etc.)
+- What cooking method was likely used? (fried, baked, raw, grilled, boiled)
+- What is the approximate plate/container size for scale reference?
+
+STEP 2 - INGREDIENT IDENTIFICATION:
+Identify ALL visible components, including:
+- Main protein sources (meat, fish, eggs, legumes, tofu)
+- Carbohydrate sources (rice, pasta, bread, potatoes)
+- Vegetables and greens (be specific: lettuce vs spinach vs cabbage)
+- Sauces, dressings, and condiments (estimate type and amount)
+- Oils and fats used in cooking (visible shine = oil present)
+- Garnishes and toppings (cheese, nuts, seeds, herbs)
+
+STEP 3 - PORTION/WEIGHT ESTIMATION:
+For each ingredient, estimate weight in grams using these references:
+- Standard dinner plate = 25-27cm diameter
+- Palm-sized portion of meat/fish = ~100-120g
+- Fist-sized portion of rice/pasta = ~150-180g cooked
+- Cupped handful of vegetables = ~80-100g
+- Tablespoon of sauce/oil = ~15g
+- Slice of bread = ~30-40g
+- Medium egg = ~50g
+- Cheese slice = ~20-30g
+
+Visual estimation technique:
+1. Identify plate/container size as scale reference
+2. Estimate each ingredient's coverage area and thickness
+3. Compare to known food volumes (deck of cards = 85g meat, tennis ball = 130g rice)
+
+STEP 4 - NUTRITIONAL CALCULATION:
+Calculate nutrition per ingredient based on:
+- Standard nutritional databases (USDA)
+- Cooking method adjustments (frying adds ~30% calories from oil absorption)
+- Sauce/dressing additions
+
+Return ONLY a valid JSON object (no markdown, no explanation):
 {
-  "dish_name": "Main dish name",
+  "dish_name": "Descriptive name of the complete meal",
   "items": [
-    {"name": "Ingredient 1", "calories": 250, "protein": 20, "fat": 15, "carbs": 5, "grams": 150},
-    {"name": "Ingredient 2", "calories": 130, "protein": 3, "fat": 0.5, "carbs": 28, "grams": 100}
+    {"name": "Specific ingredient name", "calories": 250, "protein": 20.0, "fat": 15.0, "carbs": 5.0, "grams": 150},
+    {"name": "Another ingredient", "calories": 130, "protein": 3.0, "fat": 0.5, "carbs": 28.0, "grams": 100}
   ],
-  "confidence": 0.7
+  "confidence": 0.85
 }
 
-Important:
-- dish_name = overall name of the meal
-- items = EACH separate ingredient with its own nutritional values
-- Estimate realistic portion sizes based on visual analysis"""
+CRITICAL RULES:
+- Be SPECIFIC with ingredient names (e.g., "Grilled chicken breast" not just "chicken")
+- Include cooking oils/fats if food appears fried or sautéed (add as separate item "Cooking oil")
+- Include visible sauces as separate items with estimated amounts
+- For mixed dishes, try to separate components (rice separate from meat separate from vegetables)
+- Confidence should be 0.9+ only if ingredients are clearly visible and identifiable
+- If something is partially hidden or uncertain, still include it with lower confidence reflected in the overall score
+- Minimum 2 items, even for simple foods (e.g., "Toast" = bread + butter)
+- WEIGHT IS CRITICAL: Always provide realistic grams for each item - this directly affects calorie accuracy
+- Calculate calories based on grams (e.g., chicken breast = 165 kcal/100g, white rice = 130 kcal/100g cooked)
+- Total meal weight should typically be 200-500g for a main dish"""
 
         try:
             response = await self.client.chat.completions.create(
                 model=settings.OPENAI_VISION_MODEL,
                 messages=[
                     {
+                        "role": "system",
+                        "content": system_prompt,
+                    },
+                    {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": prompt},
+                            {"type": "text", "text": user_prompt},
                             {
                                 "type": "image_url",
                                 "image_url": {
@@ -130,15 +206,16 @@ Important:
                         ],
                     }
                 ],
-                max_tokens=1000,
+                max_completion_tokens=1500,
             )
 
             content = response.choices[0].message.content.strip()
+            logger.info(f"OpenAI raw response: {content[:500]}")
             json_content = extract_json_from_response(content)
             data = json.loads(json_content)
             return self._build_dish_analysis_response(data)
         except json.JSONDecodeError:
-            logger.warning("Failed to parse JSON from OpenAI response")
+            logger.warning(f"Failed to parse JSON from OpenAI response: {content[:500]}")
             return self._get_fallback_dish_response()
         except Exception as error:
             logger.error(f"OpenAI API error: {error}")
@@ -240,7 +317,7 @@ Only return the JSON object, no additional text."""
             response = await self.client.chat.completions.create(
                 model=settings.OPENAI_CHAT_MODEL,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=800,
+                max_completion_tokens=800,
             )
 
             content = response.choices[0].message.content.strip()

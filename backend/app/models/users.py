@@ -1,5 +1,6 @@
+from decimal import Decimal
 from typing import Optional, List, TYPE_CHECKING
-from sqlalchemy import String, Float, Integer
+from sqlalchemy import String, Integer, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.config.db import Base
@@ -16,11 +17,11 @@ class UserModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
 
     name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    height: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    weight: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    height: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    weight: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     gender: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
-    activity_level: Mapped[Optional[float]] = mapped_column(Float, nullable=True, default=1.2)
+    activity_level: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=1.2)
     daily_calorie_norm: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     food_entries: Mapped[List["FoodEntryModel"]] = relationship(

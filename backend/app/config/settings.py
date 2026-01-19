@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     OPENAI_API_KEY: str = ""
-    OPENAI_VISION_MODEL: str = "gpt-4o-mini"
+    OPENAI_VISION_MODEL: str = "gpt-4o"
     OPENAI_CHAT_MODEL: str = "gpt-4o-mini"
 
     UPLOAD_DIR: str = "uploads"
