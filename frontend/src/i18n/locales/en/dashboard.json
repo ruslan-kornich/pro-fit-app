@@ -2,6 +2,8 @@
   "greeting": "Welcome back,",
   "defaultUser": "User",
   "today": "Today",
+  "viewing": "Viewing",
+  "backToToday": "Back to today",
   "profilePrompt": "Complete your profile to get personalized calorie recommendations.",
   "setupProfile": "Set up profile",
   "lastMeal": "Last meal",
@@ -16,5 +18,9 @@
     "protein": "Protein",
     "fat": "Fat",
     "carbs": "Carbs"
+  },
+  "calendar": {
+    "title": "Select date",
+    "today": "Today"
   }
 }

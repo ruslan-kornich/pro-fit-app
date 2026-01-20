@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { AuthProvider } from './features/auth/AuthContext'
+import { DateProvider } from './context/DateContext'
 import './i18n'
 import './index.css'
 
@@ -10,7 +11,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <DateProvider>
+          <App />
+        </DateProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
