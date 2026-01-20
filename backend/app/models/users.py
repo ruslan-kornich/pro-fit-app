@@ -8,6 +8,7 @@ from app.utils.model import UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin
 if TYPE_CHECKING:
     from app.models.food_entries import FoodEntryModel
     from app.models.profiles import ProfileModel
+    from app.models.onboarding import OnboardingModel
 
 
 class UserModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
@@ -28,4 +29,12 @@ class UserModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
         "FoodEntryModel",
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+
+    onboarding: Mapped[Optional["OnboardingModel"]] = relationship(
+        "OnboardingModel",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        lazy="joined",
     )

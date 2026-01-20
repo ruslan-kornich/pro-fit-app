@@ -7,6 +7,7 @@ import ukDashboard from './locales/uk/dashboard.json';
 import ukFood from './locales/uk/food.json';
 import ukProfile from './locales/uk/profile.json';
 import ukRecommendations from './locales/uk/recommendations.json';
+import ukOnboarding from './locales/uk/onboarding.json';
 
 import enCommon from './locales/en/common.json';
 import enAuth from './locales/en/auth.json';
@@ -14,6 +15,7 @@ import enDashboard from './locales/en/dashboard.json';
 import enFood from './locales/en/food.json';
 import enProfile from './locales/en/profile.json';
 import enRecommendations from './locales/en/recommendations.json';
+import enOnboarding from './locales/en/onboarding.json';
 
 const resources = {
   uk: {
@@ -23,6 +25,7 @@ const resources = {
     food: ukFood,
     profile: ukProfile,
     recommendations: ukRecommendations,
+    onboarding: ukOnboarding,
   },
   en: {
     common: enCommon,
@@ -31,6 +34,7 @@ const resources = {
     food: enFood,
     profile: enProfile,
     recommendations: enRecommendations,
+    onboarding: enOnboarding,
   },
 };
 

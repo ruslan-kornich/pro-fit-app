@@ -1,0 +1,73 @@
+{
+  "progress": "Крок {{current}} з {{total}}",
+  "back": "Назад",
+  "next": "Далі",
+  "finish": "Завершити",
+  "getStarted": "Почати",
+  "welcome": {
+    "title": "Ласкаво просимо до ProFit!",
+    "subtitle": "Налаштуймо ваш профіль для персоналізації",
+    "nameLabel": "Як вас звати?",
+    "namePlaceholder": "Введіть ваше ім'я"
+  },
+  "physicalData": {
+    "title": "Фізичні дані",
+    "subtitle": "Це допоможе розрахувати вашу денну норму калорій",
+    "height": "Зріст (см)",
+    "heightPlaceholder": "175",
+    "weight": "Вага (кг)",
+    "weightPlaceholder": "70"
+  },
+  "personalInfo": {
+    "title": "Особиста інформація",
+    "subtitle": "Розкажіть трохи більше про себе",
+    "age": "Вік",
+    "agePlaceholder": "25",
+    "gender": "Стать",
+    "male": "Чоловік",
+    "female": "Жінка"
+  },
+  "activityLevel": {
+    "title": "Рівень активності",
+    "subtitle": "Наскільки ви активні у звичайний день?",
+    "sedentary": "Малорухливий",
+    "sedentaryDesc": "Мало або без фізичних вправ",
+    "lightlyActive": "Легко активний",
+    "lightlyActiveDesc": "Легкі вправи 1-3 дні/тиждень",
+    "moderatelyActive": "Помірно активний",
+    "moderatelyActiveDesc": "Помірні вправи 3-5 днів/тиждень",
+    "veryActive": "Дуже активний",
+    "veryActiveDesc": "Інтенсивні вправи 6-7 днів/тиждень",
+    "extraActive": "Надзвичайно активний",
+    "extraActiveDesc": "Дуже інтенсивні вправи та фізична робота"
+  },
+  "goal": {
+    "title": "Ваша ціль",
+    "subtitle": "Чого ви хочете досягти?",
+    "lose": "Схуднути",
+    "loseDesc": "-500 ккал/день",
+    "maintain": "Підтримувати вагу",
+    "maintainDesc": "Без змін",
+    "gain": "Набрати вагу",
+    "gainDesc": "+300 ккал/день"
+  },
+  "result": {
+    "title": "Ваша денна норма",
+    "subtitle": "На основі вашого профілю, ми рекомендуємо",
+    "calories": "{{calories}} ккал/день",
+    "askAI": "Отримати AI рекомендацію",
+    "aiLoading": "Отримуємо персональну рекомендацію...",
+    "aiError": "Не вдалося отримати AI рекомендацію",
+    "optimal": "AI рекомендує",
+    "range": "Діапазон: {{min}} - {{max}} ккал",
+    "applyAI": "Застосувати AI рекомендацію",
+    "keepCalculated": "Залишити розрахований"
+  },
+  "validation": {
+    "nameRequired": "Будь ласка, введіть ваше ім'я",
+    "heightRequired": "Будь ласка, введіть ваш зріст",
+    "weightRequired": "Будь ласка, введіть вашу вагу",
+    "ageRequired": "Будь ласка, введіть ваш вік",
+    "genderRequired": "Будь ласка, оберіть стать"
+  }
+}

@@ -4,12 +4,14 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
 from app.schemas.profiles import ProfileResponse
+from app.schemas.onboarding import OnboardingResponse
 
 
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
     profile: Optional[ProfileResponse] = None
+    onboarding: Optional[OnboardingResponse] = None
     created_at: datetime
     updated_at: datetime
 

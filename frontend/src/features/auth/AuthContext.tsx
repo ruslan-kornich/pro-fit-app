@@ -53,14 +53,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await apiLogin(data);
     const userData = await getCurrentUser();
     setUser(userData);
-    navigate('/');
+    if (!userData.onboarding?.is_completed) {
+      navigate('/onboarding');
+    } else {
+      navigate('/');
+    }
   };
 
   const register = async (data: RegisterRequest) => {
     await apiRegister(data);
     const userData = await getCurrentUser();
     setUser(userData);
-    navigate('/');
+    navigate('/onboarding');
   };
 
   const logout = () => {

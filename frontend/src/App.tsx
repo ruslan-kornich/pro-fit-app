@@ -2,10 +2,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './features/auth/AuthContext';
 import { useLanguageSync } from './i18n/useLanguageSync';
 import ProtectedRoute from './features/auth/ProtectedRoute';
+import OnboardingRoute from './features/auth/OnboardingRoute';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
 import AddFoodPage from './pages/AddFoodPage';
 import HistoryPage from './pages/HistoryPage';
@@ -36,6 +38,15 @@ export default function App() {
           element={isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />}
         />
       </Route>
+
+      <Route
+        path="/onboarding"
+        element={
+          <OnboardingRoute>
+            <OnboardingPage />
+          </OnboardingRoute>
+        }
+      />
 
       <Route
         element={

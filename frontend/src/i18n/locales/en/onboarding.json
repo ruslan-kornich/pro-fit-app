@@ -1,0 +1,73 @@
+{
+  "progress": "Step {{current}} of {{total}}",
+  "back": "Back",
+  "next": "Next",
+  "finish": "Finish",
+  "getStarted": "Get Started",
+  "welcome": {
+    "title": "Welcome to ProFit!",
+    "subtitle": "Let's set up your profile to personalize your experience",
+    "nameLabel": "What's your name?",
+    "namePlaceholder": "Enter your name"
+  },
+  "physicalData": {
+    "title": "Physical Data",
+    "subtitle": "This helps us calculate your daily calorie needs",
+    "height": "Height (cm)",
+    "heightPlaceholder": "175",
+    "weight": "Weight (kg)",
+    "weightPlaceholder": "70"
+  },
+  "personalInfo": {
+    "title": "Personal Information",
+    "subtitle": "Tell us a bit more about yourself",
+    "age": "Age",
+    "agePlaceholder": "25",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female"
+  },
+  "activityLevel": {
+    "title": "Activity Level",
+    "subtitle": "How active are you on a typical day?",
+    "sedentary": "Sedentary",
+    "sedentaryDesc": "Little or no exercise",
+    "lightlyActive": "Lightly Active",
+    "lightlyActiveDesc": "Light exercise 1-3 days/week",
+    "moderatelyActive": "Moderately Active",
+    "moderatelyActiveDesc": "Moderate exercise 3-5 days/week",
+    "veryActive": "Very Active",
+    "veryActiveDesc": "Hard exercise 6-7 days/week",
+    "extraActive": "Extra Active",
+    "extraActiveDesc": "Very hard exercise & physical job"
+  },
+  "goal": {
+    "title": "Your Goal",
+    "subtitle": "What would you like to achieve?",
+    "lose": "Lose Weight",
+    "loseDesc": "-500 kcal/day",
+    "maintain": "Maintain Weight",
+    "maintainDesc": "No adjustment",
+    "gain": "Gain Weight",
+    "gainDesc": "+300 kcal/day"
+  },
+  "result": {
+    "title": "Your Daily Goal",
+    "subtitle": "Based on your profile, we recommend",
+    "calories": "{{calories}} kcal/day",
+    "askAI": "Get AI Recommendation",
+    "aiLoading": "Getting personalized recommendation...",
+    "aiError": "Failed to get AI recommendation",
+    "optimal": "AI Recommended",
+    "range": "Range: {{min}} - {{max}} kcal",
+    "applyAI": "Apply AI Recommendation",
+    "keepCalculated": "Keep Calculated Value"
+  },
+  "validation": {
+    "nameRequired": "Please enter your name",
+    "heightRequired": "Please enter your height",
+    "weightRequired": "Please enter your weight",
+    "ageRequired": "Please enter your age",
+    "genderRequired": "Please select your gender"
+  }
+}

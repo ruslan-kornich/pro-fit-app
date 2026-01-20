@@ -17,10 +17,19 @@ export interface Profile {
   updated_at: string;
 }
 
+export interface Onboarding {
+  id: string;
+  current_step: number;
+  is_completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface User {
   id: string;
   email: string;
   profile: Profile | null;
+  onboarding: Onboarding | null;
   created_at: string;
   updated_at: string;
 }

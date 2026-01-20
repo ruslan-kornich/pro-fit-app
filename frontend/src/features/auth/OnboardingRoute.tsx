@@ -1,14 +1,13 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import Loading from '../../components/Loading';
 
-interface ProtectedRouteProps {
+interface OnboardingRouteProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function OnboardingRoute({ children }: OnboardingRouteProps) {
   const { user, isAuthenticated, loading } = useAuth();
-  const location = useLocation();
 
   if (loading) {
     return (
@@ -19,11 +18,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  if (!user?.onboarding?.is_completed) {
-    return <Navigate to="/onboarding" replace />;
+  if (user?.onboarding?.is_completed) {
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
