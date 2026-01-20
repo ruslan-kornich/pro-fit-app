@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional, TYPE_CHECKING
 from uuid import UUID
-from sqlalchemy import String, Integer, Numeric, ForeignKey
+from sqlalchemy import String, Integer, Numeric, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
@@ -34,5 +34,6 @@ class ProfileModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
     language: Mapped[str] = mapped_column(String(10), nullable=False, default="uk")
     goal: Mapped[str] = mapped_column(String(20), nullable=False, default="maintain")
     daily_calorie_norm: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    is_calorie_goal_manual: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="profile")

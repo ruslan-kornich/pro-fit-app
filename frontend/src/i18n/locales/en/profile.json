@@ -1,6 +1,26 @@
 {
   "title": "Profile",
-  "dailyCalorieGoal": "Your Daily Calorie Goal",
+  "dailyCalorieGoal": "Daily Calorie Goal",
+  "calorieGoal": {
+    "auto": "Auto",
+    "custom": "Custom",
+    "edit": "Edit",
+    "done": "Done",
+    "askAI": "Ask AI",
+    "resetToAuto": "Reset to auto"
+  },
+  "aiRecommendation": {
+    "title": "AI Calorie Recommendation",
+    "loading": "Analyzing your profile...",
+    "error": "Failed to get recommendation. Please try again.",
+    "retry": "Retry",
+    "optimal": "Optimal Daily Calories",
+    "recommendedRange": "Recommended Range",
+    "explanation": "Why this recommendation?",
+    "tips": "Personalized Tips",
+    "factors": "Factors Considered",
+    "apply": "Apply Recommendation"
+  },
   "personalInfo": {
     "title": "Personal Information",
     "name": "Name",

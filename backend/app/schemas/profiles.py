@@ -1,7 +1,7 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from uuid import UUID
 from datetime import datetime
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class ProfileResponse(BaseModel):
@@ -15,6 +15,7 @@ class ProfileResponse(BaseModel):
     language: str
     goal: str
     daily_calorie_norm: Optional[int] = None
+    is_calorie_goal_manual: bool = False
     created_at: datetime
     updated_at: datetime
 
@@ -31,6 +32,8 @@ class ProfileUpdateRequest(BaseModel):
     activity_level: Optional[float] = None
     language: Optional[Literal["uk", "en"]] = None
     goal: Optional[Literal["lose", "maintain", "gain"]] = None
+    daily_calorie_norm: Optional[int] = Field(None, ge=500, le=10000)
+    is_calorie_goal_manual: Optional[bool] = None
 
     @field_validator("language", mode="before")
     @classmethod
@@ -45,3 +48,12 @@ class ProfileUpdateRequest(BaseModel):
         if value is not None and value not in ("lose", "maintain", "gain"):
             raise ValueError("Goal must be 'lose', 'maintain', or 'gain'")
         return value
+
+
+class AICalorieRecommendationResponse(BaseModel):
+    recommended_calories_min: int
+    recommended_calories_max: int
+    recommended_calories_optimal: int
+    explanation: str
+    personalized_tips: List[str]
+    factors_considered: List[str]

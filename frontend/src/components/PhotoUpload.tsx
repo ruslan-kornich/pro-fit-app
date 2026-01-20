@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../utils/cn';
 import Button from './Button';
+import CameraCapture from './CameraCapture';
 
 interface PhotoUploadProps {
   onPhotoSelect: (file: File) => void;
@@ -9,6 +10,10 @@ interface PhotoUploadProps {
   loading?: boolean;
   className?: string;
 }
+
+const hasCameraSupport = () => {
+  return 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
+};
 
 export default function PhotoUpload({
   onPhotoSelect,
@@ -19,6 +24,7 @@ export default function PhotoUpload({
   const { t } = useTranslation('food');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
 
   const handleFileSelect = (file: File) => {
     if (file.type.startsWith('image/')) {
@@ -54,16 +60,27 @@ export default function PhotoUpload({
     }
   };
 
+  const handleCameraCapture = (file: File) => {
+    setShowCamera(false);
+    onPhotoSelect(file);
+  };
+
   return (
     <div className={cn('w-full', className)}>
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={handleInputChange}
         className="hidden"
       />
+
+      {showCamera && (
+        <CameraCapture
+          onCapture={handleCameraCapture}
+          onCancel={() => setShowCamera(false)}
+        />
+      )}
 
       {previewUrl ? (
         <div className="relative">
@@ -72,15 +89,26 @@ export default function PhotoUpload({
             alt={t('photo.preview')}
             className="w-full h-64 object-cover rounded-lg"
           />
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute bottom-3 right-3"
-            disabled={loading}
-          >
-            {t('photo.changePhoto')}
-          </Button>
+          <div className="absolute bottom-3 right-3 flex gap-2">
+            {hasCameraSupport() && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowCamera(true)}
+                disabled={loading}
+              >
+                {t('camera.takePhoto')}
+              </Button>
+            )}
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={loading}
+            >
+              {t('camera.chooseFile')}
+            </Button>
+          </div>
         </div>
       ) : (
         <div
@@ -117,10 +145,21 @@ export default function PhotoUpload({
               </svg>
             </div>
             <div>
-              <p className="text-gray-600 mb-2">{t('photo.dragAndDrop')}</p>
-              <Button onClick={() => fileInputRef.current?.click()} disabled={loading}>
-                {t('photo.takeOrSelect')}
-              </Button>
+              <p className="text-gray-600 mb-3">{t('photo.dragAndDrop')}</p>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                {hasCameraSupport() && (
+                  <Button onClick={() => setShowCamera(true)} disabled={loading}>
+                    {t('camera.takePhoto')}
+                  </Button>
+                )}
+                <Button
+                  variant={hasCameraSupport() ? 'secondary' : 'primary'}
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={loading}
+                >
+                  {t('camera.chooseFile')}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

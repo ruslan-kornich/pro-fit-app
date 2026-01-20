@@ -12,6 +12,7 @@ export interface Profile {
   language: Language;
   goal: Goal;
   daily_calorie_norm: number | null;
+  is_calorie_goal_manual: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -33,4 +34,15 @@ export interface UserUpdateRequest {
   activity_level?: number;
   language?: Language;
   goal?: Goal;
+  daily_calorie_norm?: number;
+  is_calorie_goal_manual?: boolean;
+}
+
+export interface AICalorieRecommendation {
+  recommended_calories_min: number;
+  recommended_calories_max: number;
+  recommended_calories_optimal: number;
+  explanation: string;
+  personalized_tips: string[];
+  factors_considered: string[];
 }

@@ -33,6 +33,8 @@ class UserService:
             activity_level=request.activity_level,
             language=request.language,
             goal=request.goal,
+            daily_calorie_norm=request.daily_calorie_norm,
+            is_calorie_goal_manual=request.is_calorie_goal_manual,
         )
 
         await self.profile_service.update_profile(user_id, profile_update)

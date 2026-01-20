@@ -3,9 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.profile_repository import ProfileRepository
 from app.models.profiles import ProfileModel
-from app.schemas.profiles import ProfileUpdateRequest
+from app.schemas.profiles import ProfileUpdateRequest, AICalorieRecommendationResponse
 from app.utils.exceptions import NotFoundException
 from app.utils.calorie_calculator import calculate_daily_calorie_norm
+from app.services.openai_service import openai_service
 
 
 class ProfileService:
@@ -36,14 +37,34 @@ class ProfileService:
         activity_level = update_data.get("activity_level", profile.activity_level)
         goal = update_data.get("goal", profile.goal)
 
-        daily_calorie_norm = calculate_daily_calorie_norm(
-            weight_kg=weight,
-            height_cm=height,
-            age_years=age,
-            gender=gender,
-            activity_level=activity_level,
-            goal=goal,
-        )
+        is_calorie_goal_manual = update_data.get("is_calorie_goal_manual")
+        provided_calorie_norm = update_data.get("daily_calorie_norm")
+
+        if provided_calorie_norm is not None:
+            daily_calorie_norm = provided_calorie_norm
+            is_calorie_goal_manual = True
+        elif is_calorie_goal_manual is False:
+            daily_calorie_norm = calculate_daily_calorie_norm(
+                weight_kg=weight,
+                height_cm=height,
+                age_years=age,
+                gender=gender,
+                activity_level=activity_level,
+                goal=goal,
+            )
+            is_calorie_goal_manual = False
+        elif profile.is_calorie_goal_manual:
+            daily_calorie_norm = profile.daily_calorie_norm
+        else:
+            daily_calorie_norm = calculate_daily_calorie_norm(
+                weight_kg=weight,
+                height_cm=height,
+                age_years=age,
+                gender=gender,
+                activity_level=activity_level,
+                goal=goal,
+            )
+            is_calorie_goal_manual = False
 
         updated_profile = await self.profile_repository.update_profile(
             profile_id=profile.id,
@@ -56,9 +77,26 @@ class ProfileService:
             language=update_data.get("language"),
             goal=update_data.get("goal"),
             daily_calorie_norm=daily_calorie_norm,
+            is_calorie_goal_manual=is_calorie_goal_manual,
         )
 
         if not updated_profile:
             raise NotFoundException("Profile not found")
 
         return updated_profile
+
+    async def get_ai_calorie_recommendation(
+        self, user_id: UUID
+    ) -> AICalorieRecommendationResponse:
+        profile = await self.get_profile(user_id)
+
+        return await openai_service.get_calorie_recommendation(
+            weight_kg=float(profile.weight) if profile.weight else None,
+            height_cm=float(profile.height) if profile.height else None,
+            age_years=profile.age,
+            gender=profile.gender,
+            activity_level=float(profile.activity_level) if profile.activity_level else None,
+            goal=profile.goal,
+            current_calorie_norm=profile.daily_calorie_norm,
+            language=profile.language,
+        )

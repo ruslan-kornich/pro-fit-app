@@ -49,6 +49,15 @@
     "changePhoto": "Change Photo",
     "preview": "Food preview"
   },
+  "camera": {
+    "takePhoto": "Take Photo",
+    "chooseFile": "Choose File",
+    "capture": "Capture",
+    "switchCamera": "Switch Camera",
+    "permissionDenied": "Camera access denied. Please allow camera access in your browser settings.",
+    "notFound": "No camera found on this device.",
+    "error": "Failed to access camera. Please try again."
+  },
   "validation": {
     "nameRequired": "Name and calories are required",
     "selectAtLeastOne": "Select at least one item to save"

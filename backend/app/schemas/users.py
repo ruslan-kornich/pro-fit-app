@@ -1,7 +1,7 @@
 from typing import Optional, Literal
 from uuid import UUID
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 from app.schemas.profiles import ProfileResponse
 
@@ -26,3 +26,5 @@ class UserUpdateRequest(BaseModel):
     activity_level: Optional[float] = None
     language: Optional[Literal["uk", "en"]] = None
     goal: Optional[Literal["lose", "maintain", "gain"]] = None
+    daily_calorie_norm: Optional[int] = Field(None, ge=500, le=10000)
+    is_calorie_goal_manual: Optional[bool] = None

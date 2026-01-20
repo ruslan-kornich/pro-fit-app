@@ -8,6 +8,7 @@ from openai import AsyncOpenAI
 
 from app.config.settings import settings
 from app.schemas.food import FoodAnalysisResponse, RecommendationResponse, DishAnalysisResponse, FoodItemAnalysis
+from app.schemas.profiles import AICalorieRecommendationResponse
 
 logger = logging.getLogger(__name__)
 
@@ -371,6 +372,97 @@ Only return the JSON object, no additional text."""
                 insights="Keep logging your meals to get personalized recommendations.",
                 protein_status="adequate",
                 balance_score=50,
+            )
+        except Exception as error:
+            logger.error(f"OpenAI API error: {error}")
+            raise
+
+    async def get_calorie_recommendation(
+        self,
+        weight_kg: Optional[float],
+        height_cm: Optional[float],
+        age_years: Optional[int],
+        gender: Optional[str],
+        activity_level: Optional[float],
+        goal: str,
+        current_calorie_norm: Optional[int],
+        language: str = "uk",
+    ) -> AICalorieRecommendationResponse:
+        language_instruction = get_language_instruction(language)
+
+        activity_descriptions = {
+            1.2: "sedentary (little or no exercise)",
+            1.375: "lightly active (light exercise 1-3 days/week)",
+            1.55: "moderately active (moderate exercise 3-5 days/week)",
+            1.725: "very active (hard exercise 6-7 days/week)",
+            1.9: "extra active (very hard exercise & physical job)",
+        }
+        activity_desc = activity_descriptions.get(activity_level, f"activity factor {activity_level}")
+
+        goal_descriptions = {
+            "lose": "lose weight",
+            "maintain": "maintain current weight",
+            "gain": "gain weight/muscle",
+        }
+        goal_desc = goal_descriptions.get(goal, goal)
+
+        prompt = f"""{language_instruction}
+
+You are an expert nutritionist providing personalized calorie recommendations.
+
+User profile:
+- Weight: {weight_kg or 'not provided'} kg
+- Height: {height_cm or 'not provided'} cm
+- Age: {age_years or 'not provided'} years
+- Gender: {gender or 'not provided'}
+- Activity level: {activity_desc}
+- Goal: {goal_desc}
+- Current calorie target: {current_calorie_norm or 'not set'} kcal/day
+
+Based on this profile, provide a personalized calorie recommendation using the Mifflin-St Jeor equation as a base, adjusted for activity level and goal.
+
+Return a JSON object with:
+- recommended_calories_min: lower bound of healthy calorie range (integer)
+- recommended_calories_max: upper bound of healthy calorie range (integer)
+- recommended_calories_optimal: optimal daily calories for their goal (integer)
+- explanation: detailed explanation of why this range is recommended (2-3 sentences)
+- personalized_tips: array of 3-4 specific, actionable tips for achieving their goal
+- factors_considered: array of factors that influenced the recommendation
+
+Only return the JSON object, no additional text."""
+
+        try:
+            response = await self.client.chat.completions.create(
+                model=settings.OPENAI_CHAT_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                max_completion_tokens=1000,
+            )
+
+            content = response.choices[0].message.content.strip()
+            json_content = extract_json_from_response(content)
+            data = json.loads(json_content)
+
+            return AICalorieRecommendationResponse(
+                recommended_calories_min=int(data.get("recommended_calories_min", 1500)),
+                recommended_calories_max=int(data.get("recommended_calories_max", 2500)),
+                recommended_calories_optimal=int(data.get("recommended_calories_optimal", 2000)),
+                explanation=data.get("explanation", "Based on your profile data."),
+                personalized_tips=data.get("personalized_tips", []),
+                factors_considered=data.get("factors_considered", []),
+            )
+        except json.JSONDecodeError:
+            logger.warning("Failed to parse JSON from OpenAI calorie recommendation response")
+            return AICalorieRecommendationResponse(
+                recommended_calories_min=1500,
+                recommended_calories_max=2500,
+                recommended_calories_optimal=2000,
+                explanation="Unable to generate personalized recommendation. Please try again.",
+                personalized_tips=[
+                    "Track your meals consistently",
+                    "Stay hydrated",
+                    "Eat a balanced diet",
+                ],
+                factors_considered=["Default recommendation"],
             )
         except Exception as error:
             logger.error(f"OpenAI API error: {error}")

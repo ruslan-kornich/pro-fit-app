@@ -32,6 +32,7 @@ class ProfileRepository(BaseRepository[ProfileModel]):
         language: Optional[str] = None,
         goal: Optional[str] = None,
         daily_calorie_norm: Optional[int] = None,
+        is_calorie_goal_manual: Optional[bool] = None,
     ) -> Optional[ProfileModel]:
         return await self.update(
             profile_id,
@@ -44,4 +45,5 @@ class ProfileRepository(BaseRepository[ProfileModel]):
             language=language,
             goal=goal,
             daily_calorie_norm=daily_calorie_norm,
+            is_calorie_goal_manual=is_calorie_goal_manual,
         )

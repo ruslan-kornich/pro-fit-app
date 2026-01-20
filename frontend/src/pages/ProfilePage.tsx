@@ -4,6 +4,7 @@ import { useAuth } from '../features/auth/AuthContext';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import AIRecommendationModal from '../components/AIRecommendationModal';
 import { updateCurrentUser } from '../api/users';
 import { toast } from '../utils/toast';
 import { cn } from '../utils/cn';
@@ -23,6 +24,10 @@ export default function ProfilePage() {
   const [activityLevel, setActivityLevel] = useState<number>(1.2);
   const [goal, setGoal] = useState<Goal>('maintain');
   const [language, setLanguage] = useState<Language>('uk');
+  const [calorieGoal, setCalorieGoal] = useState('');
+  const [isCalorieGoalManual, setIsCalorieGoalManual] = useState(false);
+  const [isEditingCalories, setIsEditingCalories] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
 
   const ACTIVITY_LEVELS = [
     { value: 1.2, labelKey: 'activityLevel.sedentary', descKey: 'activityLevel.sedentaryDesc' },
@@ -53,6 +58,8 @@ export default function ProfilePage() {
       setActivityLevel(user.profile.activity_level || 1.2);
       setGoal(user.profile.goal || 'maintain');
       setLanguage(user.profile.language || 'uk');
+      setCalorieGoal(user.profile.daily_calorie_norm?.toString() || '');
+      setIsCalorieGoalManual(user.profile.is_calorie_goal_manual || false);
     }
   }, [user]);
 
@@ -68,14 +75,28 @@ export default function ProfilePage() {
         activity_level: activityLevel,
         goal,
         language,
+        daily_calorie_norm: isCalorieGoalManual && calorieGoal ? parseInt(calorieGoal, 10) : undefined,
+        is_calorie_goal_manual: isCalorieGoalManual,
       });
       await refreshUser();
+      setIsEditingCalories(false);
       toast.success(t('toast.updated'));
     } catch {
       toast.error(t('toast.updateFailed'));
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleResetToAuto = () => {
+    setIsCalorieGoalManual(false);
+    setIsEditingCalories(false);
+  };
+
+  const handleApplyAIRecommendation = (calories: number) => {
+    setCalorieGoal(calories.toString());
+    setIsCalorieGoalManual(true);
+    setShowAIModal(false);
   };
 
   return (
@@ -85,16 +106,89 @@ export default function ProfilePage() {
         <p className="text-gray-600 text-sm">{user?.email}</p>
       </header>
 
-      {user?.profile?.daily_calorie_norm && (
-        <Card className="bg-primary-50 border border-primary-200">
-          <div className="text-center">
-            <p className="text-sm text-primary-700">{t('dailyCalorieGoal')}</p>
-            <p className="text-3xl font-bold text-primary-600">
-              {user.profile.daily_calorie_norm} {tCommon('units.kcal')}
-            </p>
+      <Card className={cn(
+        "border",
+        isCalorieGoalManual ? "bg-amber-50 border-amber-200" : "bg-primary-50 border-primary-200"
+      )}>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <p className={cn(
+              "text-sm",
+              isCalorieGoalManual ? "text-amber-700" : "text-primary-700"
+            )}>{t('dailyCalorieGoal')}</p>
+            <span className={cn(
+              "text-xs px-2 py-0.5 rounded-full font-medium",
+              isCalorieGoalManual
+                ? "bg-amber-200 text-amber-800"
+                : "bg-primary-200 text-primary-800"
+            )}>
+              {isCalorieGoalManual ? t('calorieGoal.custom') : t('calorieGoal.auto')}
+            </span>
           </div>
-        </Card>
-      )}
+
+          {isEditingCalories ? (
+            <div className="flex items-center justify-center gap-2">
+              <input
+                type="number"
+                value={calorieGoal}
+                onChange={(event) => {
+                  setCalorieGoal(event.target.value);
+                  setIsCalorieGoalManual(true);
+                }}
+                className="w-24 text-2xl font-bold text-center border rounded-lg p-1"
+                min="500"
+                max="10000"
+              />
+              <span className={cn(
+                "text-xl font-bold",
+                isCalorieGoalManual ? "text-amber-600" : "text-primary-600"
+              )}>{tCommon('units.kcal')}</span>
+            </div>
+          ) : (
+            <p className={cn(
+              "text-3xl font-bold",
+              isCalorieGoalManual ? "text-amber-600" : "text-primary-600"
+            )}>
+              {calorieGoal || user?.profile?.daily_calorie_norm || '—'} {tCommon('units.kcal')}
+            </p>
+          )}
+
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <button
+              type="button"
+              onClick={() => setIsEditingCalories(!isEditingCalories)}
+              className="text-sm text-gray-600 hover:text-gray-800 underline"
+            >
+              {isEditingCalories ? t('calorieGoal.done') : t('calorieGoal.edit')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAIModal(true)}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zm.75-9.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM10 9a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 9z" />
+              </svg>
+              {t('calorieGoal.askAI')}
+            </button>
+            {isCalorieGoalManual && (
+              <button
+                type="button"
+                onClick={handleResetToAuto}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                {t('calorieGoal.resetToAuto')}
+              </button>
+            )}
+          </div>
+        </div>
+      </Card>
+
+      <AIRecommendationModal
+        isOpen={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        onApply={handleApplyAIRecommendation}
+      />
 
       <Card>
         <h2 className="font-semibold text-gray-900 mb-4">{t('personalInfo.title')}</h2>
