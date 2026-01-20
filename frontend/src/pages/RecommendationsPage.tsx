@@ -64,7 +64,7 @@ export default function RecommendationsPage() {
 
   if (loading) {
     return (
-      <div className="p-4 flex flex-col items-center justify-center min-h-screen">
+      <div className="p-4 flex flex-col items-center justify-center h-full">
         <Loading size="lg" />
         <p className="text-gray-600 mt-4">{t('loading')}</p>
       </div>

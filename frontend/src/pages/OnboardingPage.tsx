@@ -291,23 +291,23 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex items-center justify-center">
+      <div className="h-full bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex items-center justify-center">
         <Loading size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex flex-col">
-      <div className="p-4 pt-8">
+    <div className="h-full bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex flex-col overflow-hidden">
+      <div className="p-4 pt-8 flex-shrink-0">
         <OnboardingProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-4 pb-8">
+      <div className="flex-1 flex flex-col justify-center px-4 overflow-y-auto">
         <div className="animate-fadeIn" key={currentStep}>{renderStep()}</div>
       </div>
 
-      <div className="p-4 pb-8 flex gap-3">
+      <div className="px-4 pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] flex gap-3 flex-shrink-0">
         {currentStep > 1 && (
           <button
             type="button"

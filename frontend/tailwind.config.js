@@ -6,6 +6,18 @@ export default {
   ],
   theme: {
     extend: {
+      height: {
+        'screen-dvh': '100dvh',
+        'screen-svh': '100svh',
+      },
+      minHeight: {
+        'screen-dvh': '100dvh',
+        'screen-svh': '100svh',
+      },
+      padding: {
+        'safe-bottom': 'env(safe-area-inset-bottom, 0px)',
+        'safe-top': 'env(safe-area-inset-top, 0px)',
+      },
       animation: {
         fadeIn: 'fadeIn 0.3s ease-out',
       },

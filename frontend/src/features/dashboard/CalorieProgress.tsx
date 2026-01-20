@@ -19,7 +19,7 @@ export default function CalorieProgress({ consumed, goal, className }: CaloriePr
 
   return (
     <div className={cn('flex flex-col items-center', className)}>
-      <div className="relative w-52 h-52">
+      <div className="relative w-40 h-40">
         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
           <circle
             cx="100"
@@ -27,7 +27,7 @@ export default function CalorieProgress({ consumed, goal, className }: CaloriePr
             r="90"
             fill="none"
             stroke="#e5e7eb"
-            strokeWidth="12"
+            strokeWidth="14"
           />
           <circle
             cx="100"
@@ -35,7 +35,7 @@ export default function CalorieProgress({ consumed, goal, className }: CaloriePr
             r="90"
             fill="none"
             stroke={isOverLimit ? '#ef4444' : '#22c55e'}
-            strokeWidth="12"
+            strokeWidth="14"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
@@ -43,11 +43,11 @@ export default function CalorieProgress({ consumed, goal, className }: CaloriePr
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-4xl font-bold text-gray-900">{consumed}</span>
-          <span className="text-sm text-gray-500">{t('calories.of')} {goal} {tCommon('units.kcal')}</span>
+          <span className="text-3xl font-bold text-gray-900">{consumed}</span>
+          <span className="text-xs text-gray-500">{t('calories.of')} {goal} {tCommon('units.kcal')}</span>
         </div>
       </div>
-      <div className="mt-4 text-center">
+      <div className="mt-2 text-center">
         {isOverLimit ? (
           <p className="text-red-500 font-medium">
             {consumed - goal} {tCommon('units.kcal')} {t('calories.overLimit')}

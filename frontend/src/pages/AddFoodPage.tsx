@@ -211,7 +211,7 @@ export default function AddFoodPage() {
   const selectedCount = editableItems.filter(item => item.selected).length;
 
   return (
-    <div className="p-4 space-y-4 pb-24">
+    <div className="p-4 space-y-4 pb-[calc(env(safe-area-inset-bottom,0px)+6rem)]">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">{t('addFood.title')}</h1>
         {(previewUrl || name || selectedSearchResult) && (

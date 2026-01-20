@@ -115,7 +115,7 @@ export default function HistoryPage() {
 
   if (loading && entries.length === 0) {
     return (
-      <div className="p-4 flex justify-center items-center min-h-screen">
+      <div className="p-4 flex justify-center items-center h-full">
         <Loading size="lg" />
       </div>
     );

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 interface CameraCaptureProps {
@@ -73,6 +74,14 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
     startCamera();
   }, [facingMode]);
 
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   const handleCapture = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
@@ -104,8 +113,12 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
     setFacingMode((prev) => (prev === 'environment' ? 'user' : 'environment'));
   };
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+  const buttonTouchStyles = {
+    WebkitTapHighlightColor: 'transparent',
+  } as React.CSSProperties;
+
+  const cameraContent = (
+    <div className="camera-overlay fixed inset-0 z-[9999] bg-black flex flex-col">
       <div className="flex-1 relative">
         {error ? (
           <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
@@ -133,17 +146,22 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
             playsInline
             muted
             className="w-full h-full object-cover"
+            style={{ transform: 'translateZ(0)' }}
           />
         )}
         <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      <div className="bg-black/80 p-4 safe-area-inset-bottom">
+      <div
+        className="bg-black/80 px-4 pt-6"
+        style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 2rem), 6rem)' }}
+      >
         <div className="flex items-center justify-between max-w-md mx-auto">
           <button
             type="button"
             onClick={onCancel}
-            className="w-12 h-12 flex items-center justify-center text-white"
+            className="w-14 h-14 flex items-center justify-center text-white active:bg-white/20 rounded-full transition-colors touch-manipulation select-none"
+            style={buttonTouchStyles}
           >
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -159,16 +177,18 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
             type="button"
             onClick={handleCapture}
             disabled={!!error}
-            className="w-16 h-16 rounded-full bg-white border-4 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            className="w-20 h-20 rounded-full bg-white border-4 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-transform touch-manipulation select-none"
+            style={buttonTouchStyles}
           />
 
           {hasMultipleCameras ? (
             <button
               type="button"
               onClick={handleSwitchCamera}
-              className="w-12 h-12 flex items-center justify-center text-white"
+              className="w-14 h-14 flex items-center justify-center text-white active:bg-white/20 rounded-full transition-colors touch-manipulation select-none"
+              style={buttonTouchStyles}
             >
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -178,10 +198,12 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
               </svg>
             </button>
           ) : (
-            <div className="w-12 h-12" />
+            <div className="w-14 h-14" />
           )}
         </div>
       </div>
     </div>
   );
+
+  return createPortal(cameraContent, document.body);
 }

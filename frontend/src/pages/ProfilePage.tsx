@@ -101,9 +101,30 @@ export default function ProfilePage() {
 
   return (
     <div className="p-4 space-y-4">
-      <header>
-        <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
-        <p className="text-gray-600 text-sm">{user?.email}</p>
+      <header className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-gray-600 text-sm">{user?.email}</p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="p-2 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors disabled:opacity-50"
+          title={t('saveChanges')}
+        >
+          {saving ? (
+            <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3h10l4 4v12a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 3v4h6V3" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 14a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          )}
+        </button>
       </header>
 
       <Card className={cn(
@@ -323,10 +344,6 @@ export default function ProfilePage() {
           ))}
         </div>
       </Card>
-
-      <Button className="w-full" onClick={handleSave} loading={saving}>
-        {t('saveChanges')}
-      </Button>
 
       <Button variant="secondary" className="w-full" onClick={logout}>
         {t('signOut')}

@@ -11,7 +11,7 @@ export default function OnboardingRoute({ children }: OnboardingRouteProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <Loading size="lg" />
       </div>
     );

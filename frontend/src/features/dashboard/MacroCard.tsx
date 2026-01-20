@@ -15,9 +15,9 @@ export default function MacroCard({ protein, fat, carbs }: MacroCardProps) {
   const carbsGoal = 250;
 
   return (
-    <Card>
-      <h3 className="font-semibold text-gray-900 mb-4">{t('macros.protein')} / {t('macros.fat')} / {t('macros.carbs')}</h3>
-      <div className="space-y-4">
+    <Card className="py-3">
+      <h3 className="font-medium text-gray-900 mb-3 text-sm">{t('macros.protein')} / {t('macros.fat')} / {t('macros.carbs')}</h3>
+      <div className="space-y-3">
         <ProgressBar
           label={t('macros.protein')}
           value={protein}
