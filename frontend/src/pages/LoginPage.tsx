@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../features/auth/AuthContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { toast } from '../utils/toast';
 
 export default function LoginPage() {
+  const { t } = useTranslation('auth');
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,20 +19,20 @@ export default function LoginPage() {
     setErrors({});
 
     if (!email) {
-      setErrors((prev) => ({ ...prev, email: 'Email is required' }));
+      setErrors((prev) => ({ ...prev, email: t('validation.emailRequired') }));
       return;
     }
     if (!password) {
-      setErrors((prev) => ({ ...prev, password: 'Password is required' }));
+      setErrors((prev) => ({ ...prev, password: t('validation.passwordRequired') }));
       return;
     }
 
     setLoading(true);
     try {
       await login({ email, password });
-      toast.success('Welcome back!');
+      toast.success(t('login.welcomeBack'));
     } catch (error) {
-      toast.error('Invalid email or password');
+      toast.error(t('login.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -38,32 +40,32 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">{t('login.title')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Email"
+          label={t('login.email')}
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           error={errors.email}
-          placeholder="your@email.com"
+          placeholder={t('login.emailPlaceholder')}
         />
         <Input
-          label="Password"
+          label={t('login.password')}
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={errors.password}
-          placeholder="Enter your password"
+          placeholder={t('login.passwordPlaceholder')}
         />
         <Button type="submit" className="w-full" loading={loading}>
-          Sign In
+          {t('login.submit')}
         </Button>
       </form>
       <p className="text-center mt-4 text-gray-600">
-        Don't have an account?{' '}
+        {t('login.noAccount')}{' '}
         <Link to="/register" className="text-primary-500 hover:underline">
-          Sign Up
+          {t('login.signUp')}
         </Link>
       </p>
     </div>

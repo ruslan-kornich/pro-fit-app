@@ -1,0 +1,61 @@
+{
+  "addFood": {
+    "title": "Add Food",
+    "tabs": {
+      "photo": "Photo",
+      "search": "Search",
+      "manual": "Manual"
+    },
+    "analyzing": "Analyzing food...",
+    "analyzedSuccess": "Food analyzed successfully!",
+    "analyzeFailed": "Failed to analyze photo. Try again or enter manually.",
+    "confidence": "Confidence",
+    "detectedItems": "Detected items",
+    "selected": "selected",
+    "saveAs": "Save as \"{{name}}\"",
+    "saveItemsSeparately": "Save {{count}} item(s) separately",
+    "servingSize": "Serving size:",
+    "grams": "grams",
+    "saveFoodEntry": "Save Food Entry",
+    "searchPlaceholder": "Search food (e.g., 'apple 100g', '2 eggs')",
+    "searchHint": "Search for foods by name",
+    "searchExample": "Try \"apple 100g\" or \"2 eggs\"",
+    "noResults": "No results found for \"{{query}}\"",
+    "searchFailed": "Failed to search. Please try again."
+  },
+  "manual": {
+    "foodName": "Food Name",
+    "foodNamePlaceholder": "e.g., Grilled Chicken Salad",
+    "calories": "Calories",
+    "grams": "Grams",
+    "protein": "Protein (g)",
+    "fat": "Fat (g)",
+    "carbs": "Carbs (g)"
+  },
+  "history": {
+    "title": "Food History",
+    "entries": "entries",
+    "noEntries": "No food entries yet",
+    "startTracking": "Start tracking your meals!",
+    "items": "items",
+    "ingredients": "Ingredients",
+    "deleteSuccess": "Entry deleted",
+    "deleteFailed": "Failed to delete entry",
+    "loadFailed": "Failed to load history"
+  },
+  "photo": {
+    "dragAndDrop": "Drag and drop a photo here, or",
+    "takeOrSelect": "Take or Select Photo",
+    "changePhoto": "Change Photo",
+    "preview": "Food preview"
+  },
+  "validation": {
+    "nameRequired": "Name and calories are required",
+    "selectAtLeastOne": "Select at least one item to save"
+  },
+  "toast": {
+    "saved": "Food entry saved!",
+    "savedMultiple": "{{count}} item(s) saved!",
+    "saveFailed": "Failed to save food entry"
+  }
+}

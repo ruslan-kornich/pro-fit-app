@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 from app.repositories.food_entry_repository import FoodEntryRepository
 from app.repositories.user_repository import UserRepository
+from app.repositories.profile_repository import ProfileRepository
 from app.models.food_entries import FoodEntryModel
 from app.schemas.food import (
     FoodAnalysisResponse,
@@ -30,8 +31,16 @@ class FoodService:
         self.session = session
         self.food_repository = FoodEntryRepository(session)
         self.user_repository = UserRepository(session)
+        self.profile_repository = ProfileRepository(session)
 
-    async def analyze_photo(self, file: UploadFile) -> tuple[FoodAnalysisResponse, str]:
+    async def _get_user_language(self, user_id: UUID) -> str:
+        """Get user's preferred language from profile."""
+        profile = await self.profile_repository.get_by_user_id(user_id)
+        if profile and profile.language:
+            return profile.language
+        return "uk"
+
+    async def analyze_photo(self, file: UploadFile, user_id: Optional[UUID] = None) -> tuple[FoodAnalysisResponse, str]:
         if not file.content_type or not file.content_type.startswith("image/"):
             raise BadRequestException("File must be an image")
 
@@ -40,14 +49,19 @@ class FoodService:
 
         photo_url = await save_upload_file(file, subfolder="food")
 
+        language = "uk"
+        if user_id:
+            language = await self._get_user_language(user_id)
+
         analysis = await openai_service.analyze_food_photo(
             image_data=content,
             mime_type=file.content_type,
+            language=language,
         )
 
         return analysis, photo_url
 
-    async def analyze_photo_detailed(self, file: UploadFile) -> tuple[DishAnalysisResponse, str]:
+    async def analyze_photo_detailed(self, file: UploadFile, user_id: Optional[UUID] = None) -> tuple[DishAnalysisResponse, str]:
         logger.info(f"analyze_photo_detailed called with file: {file.filename}, content_type: {file.content_type}")
 
         if not file.content_type or not file.content_type.startswith("image/"):
@@ -60,10 +74,16 @@ class FoodService:
         photo_url = await save_upload_file(file, subfolder="food")
         logger.info(f"File saved, photo_url: {photo_url}")
 
+        language = "uk"
+        if user_id:
+            language = await self._get_user_language(user_id)
+        logger.info(f"Using language: {language}")
+
         logger.info("Calling openai_service.analyze_food_photo_detailed...")
         analysis = await openai_service.analyze_food_photo_detailed(
             image_data=content,
             mime_type=file.content_type,
+            language=language,
         )
         logger.info(f"Analysis received: dish_name={analysis.dish_name}, total_calories={analysis.total_calories}, items_count={len(analysis.items)}")
 
@@ -164,7 +184,7 @@ class FoodService:
         totals = await self.food_repository.get_daily_totals(user_id, target_date)
 
         user = await self.user_repository.get_by_id(user_id)
-        calorie_goal = user.daily_calorie_norm if user else None
+        calorie_goal = user.profile.daily_calorie_norm if user and user.profile else None
 
         remaining = None
         if calorie_goal:
@@ -188,7 +208,9 @@ class FoodService:
         recent_foods = [entry.name for entry in recent_entries]
 
         user = await self.user_repository.get_by_id(user_id)
-        calorie_goal = user.daily_calorie_norm if user else None
+        calorie_goal = user.profile.daily_calorie_norm if user and user.profile else None
+
+        language = await self._get_user_language(user_id)
 
         recommendations = await openai_service.get_recommendations(
             daily_calories=stats.total_calories,
@@ -197,6 +219,7 @@ class FoodService:
             daily_carbs=stats.total_carbs,
             calorie_goal=calorie_goal,
             recent_foods=recent_foods,
+            language=language,
         )
 
         return recommendations

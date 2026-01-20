@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../features/auth/AuthContext';
 import { useDailyStats } from '../hooks/useDailyStats';
 import CalorieProgress from '../features/dashboard/CalorieProgress';
@@ -11,6 +12,7 @@ import type { FoodEntry } from '../types/food';
 import { formatTime } from '../utils/formatters';
 
 export default function DashboardPage() {
+  const { t, i18n } = useTranslation('dashboard');
   const { user } = useAuth();
   const { stats, loading: statsLoading } = useDailyStats();
   const [lastEntry, setLastEntry] = useState<FoodEntry | null>(null);
@@ -29,7 +31,12 @@ export default function DashboardPage() {
     loadLastEntry();
   }, []);
 
-  const calorieGoal = user?.daily_calorie_norm || 2000;
+  const calorieGoal = user?.profile?.daily_calorie_norm || 2000;
+
+  const formatDate = (date: Date) => {
+    const locale = i18n.language === 'uk' ? 'uk-UA' : 'en-US';
+    return date.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
+  };
 
   if (statsLoading) {
     return (
@@ -43,23 +50,23 @@ export default function DashboardPage() {
     <div className="p-4 space-y-6">
       <header className="flex justify-between items-center">
         <div>
-          <p className="text-gray-500 text-sm">Welcome back,</p>
+          <p className="text-gray-500 text-sm">{t('greeting')}</p>
           <h1 className="text-2xl font-bold text-gray-900">
-            {user?.name || 'User'}
+            {user?.profile?.name || t('defaultUser')}
           </h1>
         </div>
         <div className="text-right">
-          <p className="text-sm text-gray-500">Today</p>
-          <p className="font-medium">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+          <p className="text-sm text-gray-500">{t('today')}</p>
+          <p className="font-medium">{formatDate(new Date())}</p>
         </div>
       </header>
 
-      {!user?.daily_calorie_norm && (
+      {!user?.profile?.daily_calorie_norm && (
         <Card className="bg-yellow-50 border border-yellow-200">
           <p className="text-yellow-800 text-sm">
-            Complete your profile to get personalized calorie recommendations.{' '}
+            {t('profilePrompt')}{' '}
             <Link to="/profile" className="font-medium underline">
-              Set up profile
+              {t('setupProfile')}
             </Link>
           </p>
         </Card>
@@ -93,10 +100,10 @@ export default function DashboardPage() {
               </div>
             )}
             <div className="flex-1">
-              <p className="text-sm text-gray-500">Last meal</p>
+              <p className="text-sm text-gray-500">{t('lastMeal')}</p>
               <p className="font-medium text-gray-900">{lastEntry.name}</p>
               <p className="text-sm text-gray-600">
-                {lastEntry.calories} kcal • {formatTime(lastEntry.created_at)}
+                {lastEntry.calories} {t('calories.of', { ns: 'common' })} • {formatTime(lastEntry.created_at)}
               </p>
             </div>
           </div>
@@ -111,7 +118,7 @@ export default function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               </svg>
             </div>
-            <p className="font-medium text-gray-900">Scan Food</p>
+            <p className="font-medium text-gray-900">{t('scanFood')}</p>
           </Card>
         </Link>
         <Link to="/recommendations">
@@ -121,7 +128,7 @@ export default function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <p className="font-medium text-gray-900">AI Tips</p>
+            <p className="font-medium text-gray-900">{t('aiTips')}</p>
           </Card>
         </Link>
       </div>

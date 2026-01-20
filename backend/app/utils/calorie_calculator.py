@@ -15,6 +15,19 @@ class ActivityLevel(float, Enum):
     EXTRA_ACTIVE = 1.9
 
 
+class Goal(str, Enum):
+    LOSE = "lose"
+    MAINTAIN = "maintain"
+    GAIN = "gain"
+
+
+GOAL_CALORIE_ADJUSTMENTS = {
+    Goal.LOSE: -500,
+    Goal.MAINTAIN: 0,
+    Goal.GAIN: 300,
+}
+
+
 def calculate_bmr(
     weight_kg: float,
     height_cm: float,
@@ -40,11 +53,12 @@ def calculate_daily_calorie_norm(
     height_cm: Optional[float],
     age_years: Optional[int],
     gender: Optional[str],
-    activity_level: Optional[float] = None
+    activity_level: Optional[float] = None,
+    goal: Optional[str] = None,
 ) -> Optional[int]:
     """
-    Calculate Total Daily Energy Expenditure (TDEE).
-    TDEE = BMR × activity_level
+    Calculate Total Daily Energy Expenditure (TDEE) with goal adjustment.
+    TDEE = BMR × activity_level + goal_adjustment
     """
     if not all([weight_kg, height_cm, age_years, gender]):
         return None
@@ -60,4 +74,14 @@ def calculate_daily_calorie_norm(
 
     activity_multiplier = activity_level or ActivityLevel.SEDENTARY.value
 
-    return round(bmr * activity_multiplier)
+    tdee = bmr * activity_multiplier
+
+    goal_adjustment = 0
+    if goal:
+        try:
+            goal_enum = Goal(goal.lower())
+            goal_adjustment = GOAL_CALORIE_ADJUSTMENTS.get(goal_enum, 0)
+        except ValueError:
+            pass
+
+    return round(tdee + goal_adjustment)

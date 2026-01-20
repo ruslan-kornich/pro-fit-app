@@ -1,0 +1,46 @@
+{
+  "title": "Профіль",
+  "dailyCalorieGoal": "Ваша денна норма калорій",
+  "personalInfo": {
+    "title": "Особиста інформація",
+    "name": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "height": "Зріст (см)",
+    "weight": "Вага (кг)",
+    "age": "Вік",
+    "gender": "Стать",
+    "male": "Чоловік",
+    "female": "Жінка"
+  },
+  "goal": {
+    "title": "Ціль",
+    "lose": "Схуднути",
+    "loseDesc": "-500 ккал/день",
+    "maintain": "Підтримувати",
+    "maintainDesc": "Без змін",
+    "gain": "Набрати вагу",
+    "gainDesc": "+300 ккал/день"
+  },
+  "activityLevel": {
+    "title": "Рівень активності",
+    "sedentary": "Малорухливий",
+    "sedentaryDesc": "Мало або без фізичних вправ",
+    "lightlyActive": "Легко активний",
+    "lightlyActiveDesc": "Легкі вправи 1-3 дні/тиждень",
+    "moderatelyActive": "Помірно активний",
+    "moderatelyActiveDesc": "Помірні вправи 3-5 днів/тиждень",
+    "veryActive": "Дуже активний",
+    "veryActiveDesc": "Інтенсивні вправи 6-7 днів/тиждень",
+    "extraActive": "Надзвичайно активний",
+    "extraActiveDesc": "Дуже інтенсивні вправи та фізична робота"
+  },
+  "language": {
+    "title": "Мова"
+  },
+  "saveChanges": "Зберегти зміни",
+  "signOut": "Вийти",
+  "toast": {
+    "updated": "Профіль оновлено!",
+    "updateFailed": "Не вдалося оновити профіль"
+  }
+}

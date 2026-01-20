@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Home",
+    "history": "History",
+    "add": "Add",
+    "ai": "AI",
+    "profile": "Profile"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "delete": "Delete",
+    "loadMore": "Load More",
+    "refresh": "Refresh"
+  },
+  "units": {
+    "kcal": "kcal",
+    "grams": "g",
+    "protein": "protein",
+    "fat": "fat",
+    "carbs": "carbs"
+  },
+  "toast": {
+    "success": "Success",
+    "error": "Error"
+  },
+  "loading": "Loading..."
+}

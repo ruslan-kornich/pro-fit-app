@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import Card from '../components/Card';
 import Loading from '../components/Loading';
 import Button from '../components/Button';
@@ -9,6 +10,8 @@ import { toast } from '../utils/toast';
 import { cn } from '../utils/cn';
 
 export default function HistoryPage() {
+  const { t } = useTranslation('food');
+  const { t: tCommon } = useTranslation('common');
   const [entries, setEntries] = useState<FoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -39,11 +42,11 @@ export default function HistoryPage() {
       }
       setHasMore(response.entries.length === 20);
     } catch {
-      toast.error('Failed to load history');
+      toast.error(t('history.loadFailed'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadEntries(1);
@@ -60,9 +63,9 @@ export default function HistoryPage() {
     try {
       await deleteFoodEntry(entryId);
       setEntries((prev) => prev.filter((entry) => entry.id !== entryId));
-      toast.success('Entry deleted');
+      toast.success(t('history.deleteSuccess'));
     } catch {
-      toast.error('Failed to delete entry');
+      toast.error(t('history.deleteFailed'));
     } finally {
       setDeleting(null);
     }
@@ -88,8 +91,8 @@ export default function HistoryPage() {
   return (
     <div className="p-4 space-y-4">
       <header>
-        <h1 className="text-2xl font-bold text-gray-900">Food History</h1>
-        <p className="text-gray-600 text-sm">{entries.length} entries</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t('history.title')}</h1>
+        <p className="text-gray-600 text-sm">{entries.length} {t('history.entries')}</p>
       </header>
 
       {entries.length === 0 ? (
@@ -99,8 +102,8 @@ export default function HistoryPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-gray-600">No food entries yet</p>
-          <p className="text-gray-400 text-sm mt-1">Start tracking your meals!</p>
+          <p className="text-gray-600">{t('history.noEntries')}</p>
+          <p className="text-gray-400 text-sm mt-1">{t('history.startTracking')}</p>
         </Card>
       ) : (
         <div className="space-y-6">
@@ -133,17 +136,17 @@ export default function HistoryPage() {
                             <p className="font-medium text-gray-900 truncate">{entry.name}</p>
                             {hasIngredients && (
                               <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
-                                {entry.ingredients.length} items
+                                {entry.ingredients.length} {t('history.items')}
                               </span>
                             )}
                           </div>
                           <p className="text-sm text-gray-500">
-                            {entry.calories} kcal • {formatTime(entry.created_at)}
+                            {entry.calories} {tCommon('units.kcal')} • {formatTime(entry.created_at)}
                           </p>
                           <div className="flex gap-2 text-xs text-gray-400 mt-0.5">
-                            {entry.protein && <span>P: {entry.protein}g</span>}
-                            {entry.fat && <span>F: {entry.fat}g</span>}
-                            {entry.carbs && <span>C: {entry.carbs}g</span>}
+                            {entry.protein && <span>P: {entry.protein}{tCommon('units.grams')}</span>}
+                            {entry.fat && <span>F: {entry.fat}{tCommon('units.grams')}</span>}
+                            {entry.carbs && <span>C: {entry.carbs}{tCommon('units.grams')}</span>}
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
@@ -180,17 +183,17 @@ export default function HistoryPage() {
 
                       {hasIngredients && isExpanded && (
                         <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
-                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Ingredients</p>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('history.ingredients')}</p>
                           {entry.ingredients.map((ingredient) => (
                             <div key={ingredient.id} className="flex items-center justify-between py-1.5 px-2 bg-gray-50 rounded">
                               <div>
                                 <p className="text-sm text-gray-700">{ingredient.name}</p>
                                 <p className="text-xs text-gray-400">
-                                  {ingredient.grams && `${ingredient.grams}g`}
+                                  {ingredient.grams && `${ingredient.grams}${tCommon('units.grams')}`}
                                 </p>
                               </div>
                               <div className="text-right">
-                                <p className="text-sm font-medium text-gray-900">{ingredient.calories} kcal</p>
+                                <p className="text-sm font-medium text-gray-900">{ingredient.calories} {tCommon('units.kcal')}</p>
                                 <p className="text-xs text-gray-400">
                                   P:{ingredient.protein || 0} F:{ingredient.fat || 0} C:{ingredient.carbs || 0}
                                 </p>
@@ -213,7 +216,7 @@ export default function HistoryPage() {
               onClick={handleLoadMore}
               loading={loading}
             >
-              Load More
+              {tCommon('buttons.loadMore')}
             </Button>
           )}
         </div>

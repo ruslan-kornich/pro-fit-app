@@ -1,12 +1,13 @@
 from typing import Optional
 from uuid import UUID
 from datetime import date
-from fastapi import APIRouter, Depends, UploadFile, File, Query
+from fastapi import APIRouter, Depends, UploadFile, File, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.db import get_db
 from app.config.jwt import get_current_user_id
 from app.services.food_service import FoodService
+from app.services.nutrition_search_service import nutrition_search_service, NutritionSearchError
 from app.schemas.food import (
     FoodAnalysisResponse,
     FoodEntryCreate,
@@ -17,9 +18,21 @@ from app.schemas.food import (
     FoodEntriesListResponse,
     AnalyzePhotoDetailedResponse,
 )
+from app.schemas.nutrition_search import NutritionSearchResponse
 
 
 router = APIRouter(prefix="/food", tags=["Food"])
+
+
+@router.get("/search", response_model=NutritionSearchResponse)
+async def search_food_nutrition(
+    query: str = Query(..., min_length=1, max_length=100),
+    user_id: str = Depends(get_current_user_id),
+):
+    try:
+        return await nutrition_search_service.search(query)
+    except NutritionSearchError as error:
+        raise HTTPException(status_code=400, detail=str(error))
 
 
 class AnalyzePhotoResponse(FoodAnalysisResponse):
@@ -33,7 +46,7 @@ async def analyze_photo(
     db: AsyncSession = Depends(get_db),
 ):
     service = FoodService(db)
-    analysis, photo_url = await service.analyze_photo(file)
+    analysis, photo_url = await service.analyze_photo(file, user_id=UUID(user_id))
     return AnalyzePhotoResponse(
         name=analysis.name,
         calories=analysis.calories,
@@ -58,7 +71,7 @@ async def analyze_photo_detailed(
     - List of individual ingredients with calories each
     """
     service = FoodService(db)
-    analysis, photo_url = await service.analyze_photo_detailed(file)
+    analysis, photo_url = await service.analyze_photo_detailed(file, user_id=UUID(user_id))
     return AnalyzePhotoDetailedResponse(
         dish_name=analysis.dish_name,
         total_calories=analysis.total_calories,

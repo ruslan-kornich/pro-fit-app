@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../utils/cn';
 import Button from './Button';
 
@@ -15,6 +16,7 @@ export default function PhotoUpload({
   loading = false,
   className,
 }: PhotoUploadProps) {
+  const { t } = useTranslation('food');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -67,7 +69,7 @@ export default function PhotoUpload({
         <div className="relative">
           <img
             src={previewUrl}
-            alt="Food preview"
+            alt={t('photo.preview')}
             className="w-full h-64 object-cover rounded-lg"
           />
           <Button
@@ -77,7 +79,7 @@ export default function PhotoUpload({
             className="absolute bottom-3 right-3"
             disabled={loading}
           >
-            Change Photo
+            {t('photo.changePhoto')}
           </Button>
         </div>
       ) : (
@@ -115,9 +117,9 @@ export default function PhotoUpload({
               </svg>
             </div>
             <div>
-              <p className="text-gray-600 mb-2">Drag and drop a photo here, or</p>
+              <p className="text-gray-600 mb-2">{t('photo.dragAndDrop')}</p>
               <Button onClick={() => fileInputRef.current?.click()} disabled={loading}>
-                Take or Select Photo
+                {t('photo.takeOrSelect')}
               </Button>
             </div>
           </div>

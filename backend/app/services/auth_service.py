@@ -2,6 +2,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.user_repository import UserRepository
+from app.services.profile_service import ProfileService
 from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, RefreshRequest
 from app.config.jwt import create_access_token, create_refresh_token, decode_token
 from app.utils.auth import hash_password, verify_password
@@ -12,6 +13,7 @@ class AuthService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.user_repository = UserRepository(session)
+        self.profile_service = ProfileService(session)
 
     async def register(self, request: RegisterRequest) -> TokenResponse:
         if await self.user_repository.email_exists(request.email):
@@ -23,6 +25,8 @@ class AuthService:
             email=request.email,
             hashed_password=hashed_password,
         )
+
+        await self.profile_service.create_profile(user.id)
 
         access_token = create_access_token({"sub": str(user.id)})
         refresh_token = create_refresh_token({"sub": str(user.id)})

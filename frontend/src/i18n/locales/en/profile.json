@@ -1,0 +1,46 @@
+{
+  "title": "Profile",
+  "dailyCalorieGoal": "Your Daily Calorie Goal",
+  "personalInfo": {
+    "title": "Personal Information",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "age": "Age",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female"
+  },
+  "goal": {
+    "title": "Goal",
+    "lose": "Lose Weight",
+    "loseDesc": "-500 kcal/day",
+    "maintain": "Maintain",
+    "maintainDesc": "No adjustment",
+    "gain": "Gain Weight",
+    "gainDesc": "+300 kcal/day"
+  },
+  "activityLevel": {
+    "title": "Activity Level",
+    "sedentary": "Sedentary",
+    "sedentaryDesc": "Little or no exercise",
+    "lightlyActive": "Lightly Active",
+    "lightlyActiveDesc": "Light exercise 1-3 days/week",
+    "moderatelyActive": "Moderately Active",
+    "moderatelyActiveDesc": "Moderate exercise 3-5 days/week",
+    "veryActive": "Very Active",
+    "veryActiveDesc": "Hard exercise 6-7 days/week",
+    "extraActive": "Extra Active",
+    "extraActiveDesc": "Very hard exercise & physical job"
+  },
+  "language": {
+    "title": "Language"
+  },
+  "saveChanges": "Save Changes",
+  "signOut": "Sign Out",
+  "toast": {
+    "updated": "Profile updated!",
+    "updateFailed": "Failed to update profile"
+  }
+}

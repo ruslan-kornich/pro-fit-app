@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../features/auth/AuthContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { toast } from '../utils/toast';
 
 export default function RegisterPage() {
+  const { t } = useTranslation('auth');
   const { register } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,28 +20,28 @@ export default function RegisterPage() {
     setErrors({});
 
     if (!email) {
-      setErrors((prev) => ({ ...prev, email: 'Email is required' }));
+      setErrors((prev) => ({ ...prev, email: t('validation.emailRequired') }));
       return;
     }
     if (!password) {
-      setErrors((prev) => ({ ...prev, password: 'Password is required' }));
+      setErrors((prev) => ({ ...prev, password: t('validation.passwordRequired') }));
       return;
     }
     if (password.length < 6) {
-      setErrors((prev) => ({ ...prev, password: 'Password must be at least 6 characters' }));
+      setErrors((prev) => ({ ...prev, password: t('validation.passwordMinLength') }));
       return;
     }
     if (password !== confirmPassword) {
-      setErrors((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      setErrors((prev) => ({ ...prev, confirmPassword: t('validation.passwordsDoNotMatch') }));
       return;
     }
 
     setLoading(true);
     try {
       await register({ email, password });
-      toast.success('Account created successfully!');
+      toast.success(t('register.success'));
     } catch (error) {
-      toast.error('Registration failed. Email may already be in use.');
+      toast.error(t('register.error'));
     } finally {
       setLoading(false);
     }
@@ -47,40 +49,40 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">{t('register.title')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Email"
+          label={t('register.email')}
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           error={errors.email}
-          placeholder="your@email.com"
+          placeholder={t('register.emailPlaceholder')}
         />
         <Input
-          label="Password"
+          label={t('register.password')}
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={errors.password}
-          placeholder="Create a password"
+          placeholder={t('register.passwordPlaceholder')}
         />
         <Input
-          label="Confirm Password"
+          label={t('register.confirmPassword')}
           type="password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
           error={errors.confirmPassword}
-          placeholder="Confirm your password"
+          placeholder={t('register.confirmPasswordPlaceholder')}
         />
         <Button type="submit" className="w-full" loading={loading}>
-          Create Account
+          {t('register.submit')}
         </Button>
       </form>
       <p className="text-center mt-4 text-gray-600">
-        Already have an account?{' '}
+        {t('register.hasAccount')}{' '}
         <Link to="/login" className="text-primary-500 hover:underline">
-          Sign In
+          {t('register.signIn')}
         </Link>
       </p>
     </div>

@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     OPENAI_VISION_MODEL: str = "gpt-4o"
     OPENAI_CHAT_MODEL: str = "gpt-4o-mini"
 
+    USDA_API_KEY: str = "GD3XPe1zDwgG3pq9q3KaQXYjYnQwsqUA5LhXIh7E"
+    USDA_API_URL: str = "https://api.nal.usda.gov/fdc/v1/foods/search"
+
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10MB
 

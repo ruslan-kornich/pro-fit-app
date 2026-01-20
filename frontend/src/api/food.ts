@@ -8,6 +8,7 @@ import type {
   FoodEntriesListResponse,
   DailyStats,
   RecommendationResponse,
+  NutritionSearchResponse,
 } from '../types/food';
 
 export async function analyzePhoto(file: File): Promise<FoodAnalysisResponse> {
@@ -67,5 +68,12 @@ export async function getDailyStats(date?: string): Promise<DailyStats> {
 
 export async function getAIRecommendations(): Promise<RecommendationResponse> {
   const response = await apiClient.get<RecommendationResponse>('/food/ai-recommendations');
+  return response.data;
+}
+
+export async function searchFoodNutrition(query: string): Promise<NutritionSearchResponse> {
+  const response = await apiClient.get<NutritionSearchResponse>('/food/search', {
+    params: { query },
+  });
   return response.data;
 }

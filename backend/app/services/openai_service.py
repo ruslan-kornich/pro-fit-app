@@ -20,14 +20,29 @@ def extract_json_from_response(text: str) -> str:
     return text
 
 
+def get_language_instruction(language: str = "uk") -> str:
+    """Get language instruction for the prompt."""
+    if language == "uk":
+        return "IMPORTANT: Respond with ALL text content in Ukrainian language. Use Ukrainian for food names, descriptions, and all other text."
+    return "IMPORTANT: Respond with ALL text content in English language. Use English for food names, descriptions, and all other text."
+
+
 class OpenAIService:
     def __init__(self):
         self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
-    async def analyze_food_photo(self, image_data: bytes, mime_type: str = "image/jpeg") -> FoodAnalysisResponse:
+    async def analyze_food_photo(
+        self,
+        image_data: bytes,
+        mime_type: str = "image/jpeg",
+        language: str = "uk",
+    ) -> FoodAnalysisResponse:
         base64_image = base64.b64encode(image_data).decode("utf-8")
+        language_instruction = get_language_instruction(language)
 
-        prompt = """You are an expert nutritionist analyzing a food photo.
+        prompt = f"""{language_instruction}
+
+You are an expert nutritionist analyzing a food photo.
 
 TASK: Identify the food/dish and estimate its total nutritional content with accurate weight.
 
@@ -45,7 +60,7 @@ ANALYSIS STEPS:
 3. Calculate nutritional values based on estimated weight
 
 Return ONLY a valid JSON object:
-{
+{{
   "name": "Specific food name with cooking method if applicable",
   "calories": 350,
   "protein": 25.0,
@@ -53,7 +68,7 @@ Return ONLY a valid JSON object:
   "carbs": 30.0,
   "grams": 250,
   "confidence": 0.85
-}
+}}
 
 RULES:
 - Name should be descriptive (e.g., "Grilled salmon fillet with lemon" not just "fish")
@@ -112,17 +127,27 @@ RULES:
             logger.error(f"OpenAI API error: {error}")
             raise
 
-    async def analyze_food_photo_detailed(self, image_data: bytes, mime_type: str = "image/jpeg") -> DishAnalysisResponse:
-        logger.info(f"analyze_food_photo_detailed called, image_size={len(image_data)} bytes")
+    async def analyze_food_photo_detailed(
+        self,
+        image_data: bytes,
+        mime_type: str = "image/jpeg",
+        language: str = "uk",
+    ) -> DishAnalysisResponse:
+        logger.info(f"analyze_food_photo_detailed called, image_size={len(image_data)} bytes, language={language}")
         base64_image = base64.b64encode(image_data).decode("utf-8")
+        language_instruction = get_language_instruction(language)
 
-        system_prompt = """You are an expert nutritionist and food analyst with 20+ years of experience in visual food recognition and portion estimation. You have extensive knowledge of:
+        system_prompt = f"""{language_instruction}
+
+You are an expert nutritionist and food analyst with 20+ years of experience in visual food recognition and portion estimation. You have extensive knowledge of:
 - International cuisines and their typical ingredients
 - Cooking methods and how they affect nutritional values
 - Visual portion estimation techniques
 - Hidden ingredients (oils, sauces, seasonings)"""
 
-        user_prompt = """Analyze this food photo carefully and thoroughly.
+        user_prompt = f"""{language_instruction}
+
+Analyze this food photo carefully and thoroughly.
 
 STEP 1 - VISUAL ANALYSIS:
 Look at the image and identify:
@@ -163,14 +188,14 @@ Calculate nutrition per ingredient based on:
 - Sauce/dressing additions
 
 Return ONLY a valid JSON object (no markdown, no explanation):
-{
+{{
   "dish_name": "Descriptive name of the complete meal",
   "items": [
-    {"name": "Specific ingredient name", "calories": 250, "protein": 20.0, "fat": 15.0, "carbs": 5.0, "grams": 150},
-    {"name": "Another ingredient", "calories": 130, "protein": 3.0, "fat": 0.5, "carbs": 28.0, "grams": 100}
+    {{"name": "Specific ingredient name", "calories": 250, "protein": 20.0, "fat": 15.0, "carbs": 5.0, "grams": 150}},
+    {{"name": "Another ingredient", "calories": 130, "protein": 3.0, "fat": 0.5, "carbs": 28.0, "grams": 100}}
   ],
   "confidence": 0.85
-}
+}}
 
 CRITICAL RULES:
 - Be SPECIFIC with ingredient names (e.g., "Grilled chicken breast" not just "chicken")
@@ -294,8 +319,13 @@ CRITICAL RULES:
         daily_carbs: float,
         calorie_goal: Optional[int],
         recent_foods: List[str],
+        language: str = "uk",
     ) -> RecommendationResponse:
-        prompt = f"""Based on the following daily nutritional intake, provide personalized nutrition recommendations.
+        language_instruction = get_language_instruction(language)
+
+        prompt = f"""{language_instruction}
+
+Based on the following daily nutritional intake, provide personalized nutrition recommendations.
 
 Today's intake:
 - Calories: {daily_calories} kcal (goal: {calorie_goal or 'not set'} kcal)

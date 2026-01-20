@@ -1,22 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PhotoUpload from '../components/PhotoUpload';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Card from '../components/Card';
 import Loading from '../components/Loading';
+import FoodSearch from '../components/FoodSearch';
 import { analyzePhotoDetailed, createFoodEntry, createFoodEntryWithIngredients } from '../api/food';
 import { toast } from '../utils/toast';
-import type { DishAnalysisResponse, FoodItemAnalysis } from '../types/food';
+import type { DishAnalysisResponse, FoodItemAnalysis, NutritionSearchResult } from '../types/food';
 import { cn } from '../utils/cn';
 
-type Tab = 'photo' | 'manual';
+type Tab = 'photo' | 'search' | 'manual';
 
 interface EditableItem extends FoodItemAnalysis {
   selected: boolean;
 }
 
 export default function AddFoodPage() {
+  const { t } = useTranslation('food');
+  const { t: tCommon } = useTranslation('common');
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('photo');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -31,6 +35,8 @@ export default function AddFoodPage() {
   const [fat, setFat] = useState('');
   const [carbs, setCarbs] = useState('');
   const [grams, setGrams] = useState('');
+
+  const [selectedSearchResult, setSelectedSearchResult] = useState<NutritionSearchResult | null>(null);
 
   const handlePhotoSelect = async (file: File) => {
     const url = URL.createObjectURL(file);
@@ -56,9 +62,9 @@ export default function AddFoodPage() {
       setCarbs(result.total_carbs.toString());
       setGrams(result.total_grams.toString());
 
-      toast.success('Food analyzed successfully!');
+      toast.success(t('addFood.analyzedSuccess'));
     } catch {
-      toast.error('Failed to analyze photo. Try again or enter manually.');
+      toast.error(t('addFood.analyzeFailed'));
     } finally {
       setAnalyzing(false);
     }
@@ -86,9 +92,35 @@ export default function AddFoodPage() {
     });
   };
 
+  const handleSearchSelect = (result: NutritionSearchResult) => {
+    setSelectedSearchResult(result);
+    setName(result.name);
+    setCalories(Math.round(result.calories).toString());
+    setProtein(result.protein_g.toFixed(1));
+    setFat(result.fat_total_g.toFixed(1));
+    setCarbs(result.carbohydrates_total_g.toFixed(1));
+    setGrams(result.serving_size_g.toString());
+  };
+
+  const handleServingSizeChange = (newGrams: string) => {
+    if (!selectedSearchResult) return;
+
+    const gramsValue = parseFloat(newGrams) || 0;
+    const originalGrams = selectedSearchResult.serving_size_g;
+
+    if (originalGrams > 0 && gramsValue > 0) {
+      const ratio = gramsValue / originalGrams;
+      setCalories(Math.round(selectedSearchResult.calories * ratio).toString());
+      setProtein((selectedSearchResult.protein_g * ratio).toFixed(1));
+      setFat((selectedSearchResult.fat_total_g * ratio).toFixed(1));
+      setCarbs((selectedSearchResult.carbohydrates_total_g * ratio).toFixed(1));
+    }
+    setGrams(newGrams);
+  };
+
   const handleSaveAll = async () => {
     if (!name || !calories) {
-      toast.error('Name and calories are required');
+      toast.error(t('validation.nameRequired'));
       return;
     }
 
@@ -125,10 +157,10 @@ export default function AddFoodPage() {
           photo_url: analysis?.photo_url || null,
         });
       }
-      toast.success('Food entry saved!');
+      toast.success(t('toast.saved'));
       navigate('/');
     } catch {
-      toast.error('Failed to save food entry');
+      toast.error(t('toast.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -137,7 +169,7 @@ export default function AddFoodPage() {
   const handleSaveSelected = async () => {
     const selectedItems = editableItems.filter(item => item.selected);
     if (selectedItems.length === 0) {
-      toast.error('Select at least one item to save');
+      toast.error(t('validation.selectAtLeastOne'));
       return;
     }
 
@@ -154,10 +186,10 @@ export default function AddFoodPage() {
           photo_url: analysis?.photo_url || null,
         });
       }
-      toast.success(`${selectedItems.length} item(s) saved!`);
+      toast.success(t('toast.savedMultiple', { count: selectedItems.length }));
       navigate('/');
     } catch {
-      toast.error('Failed to save food entries');
+      toast.error(t('toast.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -167,6 +199,7 @@ export default function AddFoodPage() {
     setPreviewUrl(null);
     setAnalysis(null);
     setEditableItems([]);
+    setSelectedSearchResult(null);
     setName('');
     setCalories('');
     setProtein('');
@@ -180,10 +213,10 @@ export default function AddFoodPage() {
   return (
     <div className="p-4 space-y-4 pb-24">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Add Food</h1>
-        {(previewUrl || name) && (
+        <h1 className="text-2xl font-bold text-gray-900">{t('addFood.title')}</h1>
+        {(previewUrl || name || selectedSearchResult) && (
           <Button variant="ghost" size="sm" onClick={resetForm}>
-            Reset
+            {tCommon('buttons.reset')}
           </Button>
         )}
       </header>
@@ -198,7 +231,18 @@ export default function AddFoodPage() {
           )}
           onClick={() => setActiveTab('photo')}
         >
-          Photo
+          {t('addFood.tabs.photo')}
+        </button>
+        <button
+          className={cn(
+            'flex-1 py-2 rounded-md text-sm font-medium transition-colors',
+            activeTab === 'search'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600'
+          )}
+          onClick={() => setActiveTab('search')}
+        >
+          {t('addFood.tabs.search')}
         </button>
         <button
           className={cn(
@@ -209,7 +253,7 @@ export default function AddFoodPage() {
           )}
           onClick={() => setActiveTab('manual')}
         >
-          Manual
+          {t('addFood.tabs.manual')}
         </button>
       </div>
 
@@ -224,7 +268,7 @@ export default function AddFoodPage() {
           {analyzing && (
             <Card className="text-center">
               <Loading size="md" className="mb-2" />
-              <p className="text-gray-600">Analyzing food...</p>
+              <p className="text-gray-600">{t('addFood.analyzing')}</p>
             </Card>
           )}
 
@@ -244,25 +288,25 @@ export default function AddFoodPage() {
                 <div className="grid grid-cols-4 gap-2 text-center bg-gray-50 rounded-lg p-3 mb-4">
                   <div>
                     <p className="text-lg font-bold text-gray-900">{calories}</p>
-                    <p className="text-xs text-gray-500">kcal</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.kcal')}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-blue-600">{protein}g</p>
-                    <p className="text-xs text-gray-500">protein</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.protein')}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-yellow-600">{fat}g</p>
-                    <p className="text-xs text-gray-500">fat</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.fat')}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-green-600">{carbs}g</p>
-                    <p className="text-xs text-gray-500">carbs</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.carbs')}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                  <span>Detected items ({editableItems.length})</span>
-                  <span>{selectedCount} selected</span>
+                  <span>{t('addFood.detectedItems')} ({editableItems.length})</span>
+                  <span>{selectedCount} {t('addFood.selected')}</span>
                 </div>
               </Card>
 
@@ -295,12 +339,12 @@ export default function AddFoodPage() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate">{item.name}</p>
                         <p className="text-sm text-gray-500">
-                          {item.grams}g
+                          {item.grams}{tCommon('units.grams')}
                         </p>
                       </div>
 
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900">{item.calories} kcal</p>
+                        <p className="font-semibold text-gray-900">{item.calories} {tCommon('units.kcal')}</p>
                         <p className="text-xs text-gray-500">
                           P:{item.protein || 0} F:{item.fat || 0} C:{item.carbs || 0}
                         </p>
@@ -316,7 +360,7 @@ export default function AddFoodPage() {
                   onClick={handleSaveAll}
                   loading={saving}
                 >
-                  Save as "{analysis.dish_name}"
+                  {t('addFood.saveAs', { name: analysis.dish_name })}
                 </Button>
 
                 {editableItems.length > 1 && (
@@ -327,7 +371,7 @@ export default function AddFoodPage() {
                     loading={saving}
                     disabled={selectedCount === 0}
                   >
-                    Save {selectedCount} item(s) separately
+                    {t('addFood.saveItemsSeparately', { count: selectedCount })}
                   </Button>
                 )}
               </div>
@@ -336,46 +380,118 @@ export default function AddFoodPage() {
         </div>
       )}
 
+      {activeTab === 'search' && (
+        <div className="space-y-4">
+          <FoodSearch onSelect={handleSearchSelect} />
+
+          {selectedSearchResult && (
+            <>
+              <Card>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="font-semibold text-lg text-gray-900 capitalize">{name}</h2>
+                  <button
+                    onClick={() => setSelectedSearchResult(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 text-center bg-gray-50 rounded-lg p-3 mb-4">
+                  <div>
+                    <p className="text-lg font-bold text-gray-900">{calories}</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.kcal')}</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-blue-600">{protein}g</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.protein')}</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-yellow-600">{fat}g</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.fat')}</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-green-600">{carbs}g</p>
+                    <p className="text-xs text-gray-500">{tCommon('units.carbs')}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-medium text-gray-700">{t('addFood.servingSize')}</label>
+                  <input
+                    type="number"
+                    value={grams}
+                    onChange={(event) => handleServingSizeChange(event.target.value)}
+                    className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                  <span className="text-sm text-gray-500">{t('addFood.grams')}</span>
+                </div>
+              </Card>
+
+              <Button
+                className="w-full"
+                onClick={handleSaveAll}
+                loading={saving}
+              >
+                {t('addFood.saveFoodEntry')}
+              </Button>
+            </>
+          )}
+
+          {!selectedSearchResult && (
+            <div className="text-center py-8 text-gray-500">
+              <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <p>{t('addFood.searchHint')}</p>
+              <p className="text-sm mt-1">{t('addFood.searchExample')}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {activeTab === 'manual' && (
         <Card>
           <div className="space-y-3">
             <Input
-              label="Food Name"
+              label={t('manual.foodName')}
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="e.g., Grilled Chicken Salad"
+              placeholder={t('manual.foodNamePlaceholder')}
             />
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="Calories"
+                label={t('manual.calories')}
                 type="number"
                 value={calories}
                 onChange={(event) => setCalories(event.target.value)}
-                placeholder="kcal"
+                placeholder={tCommon('units.kcal')}
               />
               <Input
-                label="Grams"
+                label={t('manual.grams')}
                 type="number"
                 value={grams}
                 onChange={(event) => setGrams(event.target.value)}
-                placeholder="g"
+                placeholder={tCommon('units.grams')}
               />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <Input
-                label="Protein (g)"
+                label={t('manual.protein')}
                 type="number"
                 value={protein}
                 onChange={(event) => setProtein(event.target.value)}
               />
               <Input
-                label="Fat (g)"
+                label={t('manual.fat')}
                 type="number"
                 value={fat}
                 onChange={(event) => setFat(event.target.value)}
               />
               <Input
-                label="Carbs (g)"
+                label={t('manual.carbs')}
                 type="number"
                 value={carbs}
                 onChange={(event) => setCarbs(event.target.value)}
@@ -392,7 +508,7 @@ export default function AddFoodPage() {
           loading={saving}
           disabled={!name || !calories}
         >
-          Save Food Entry
+          {t('addFood.saveFoodEntry')}
         </Button>
       )}
     </div>

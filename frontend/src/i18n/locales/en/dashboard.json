@@ -1,0 +1,20 @@
+{
+  "greeting": "Welcome back,",
+  "defaultUser": "User",
+  "today": "Today",
+  "profilePrompt": "Complete your profile to get personalized calorie recommendations.",
+  "setupProfile": "Set up profile",
+  "lastMeal": "Last meal",
+  "scanFood": "Scan Food",
+  "aiTips": "AI Tips",
+  "calories": {
+    "of": "of",
+    "remaining": "remaining",
+    "overLimit": "over limit"
+  },
+  "macros": {
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs"
+  }
+}

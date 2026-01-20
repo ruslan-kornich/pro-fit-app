@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './features/auth/AuthContext';
+import { useLanguageSync } from './i18n/useLanguageSync';
 import ProtectedRoute from './features/auth/ProtectedRoute';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
@@ -13,6 +14,7 @@ import RecommendationsPage from './pages/RecommendationsPage';
 
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
+  useLanguageSync();
 
   if (loading) {
     return (

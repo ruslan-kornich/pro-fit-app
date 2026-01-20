@@ -110,3 +110,17 @@ export interface RecommendationResponse {
   protein_status: string;
   balance_score: number;
 }
+
+export interface NutritionSearchResult {
+  name: string;
+  calories: number;
+  protein_g: number;
+  fat_total_g: number;
+  carbohydrates_total_g: number;
+  serving_size_g: number;
+}
+
+export interface NutritionSearchResponse {
+  query: string;
+  results: NutritionSearchResult[];
+}
