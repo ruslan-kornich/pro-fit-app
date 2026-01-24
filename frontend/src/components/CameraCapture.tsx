@@ -158,7 +158,7 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
 
       <div
         className="bg-black/80 px-4 pt-6"
-        style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 2rem), 6rem)' }}
+        style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 2rem + 10px), calc(6rem + 10px))' }}
       >
         <div className="flex items-center justify-between max-w-md mx-auto">
           <button
