@@ -13,6 +13,7 @@ import AddFoodPage from './pages/AddFoodPage';
 import HistoryPage from './pages/HistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import RecommendationsPage from './pages/RecommendationsPage';
+import StatisticsPage from './pages/StatisticsPage';
 
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
@@ -60,6 +61,7 @@ export default function App() {
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/recommendations" element={<RecommendationsPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

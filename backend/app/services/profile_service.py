@@ -1,9 +1,11 @@
+from datetime import date
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.profiles import ProfileModel
 from app.repositories.profile_repository import ProfileRepository
+from app.repositories.weight_entry_repository import WeightEntryRepository
 from app.schemas.profiles import AICalorieRecommendationResponse, ProfileUpdateRequest
 from app.services.openai_service import openai_service
 from app.utils.calorie_calculator import calculate_daily_calorie_norm
@@ -14,6 +16,7 @@ class ProfileService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.profile_repository = ProfileRepository(session)
+        self.weight_repository = WeightEntryRepository(session)
 
     async def get_profile(self, user_id: UUID) -> ProfileModel:
         profile = await self.profile_repository.get_by_user_id(user_id)
@@ -29,6 +32,7 @@ class ProfileService:
 
         update_data = request.model_dump(exclude_unset=True)
 
+        old_weight = profile.weight
         weight = update_data.get("weight", profile.weight)
         height = update_data.get("height", profile.height)
         age = update_data.get("age", profile.age)
@@ -81,6 +85,16 @@ class ProfileService:
 
         if not updated_profile:
             raise NotFoundException("Profile not found")
+
+        if weight is not None and old_weight is None:
+            existing_entries = await self.weight_repository.get_user_entries(user_id)
+            if not existing_entries:
+                await self.weight_repository.create(
+                    user_id=user_id,
+                    weight=weight,
+                    recorded_date=date.today(),
+                    note="Initial weight from profile",
+                )
 
         return updated_profile
 

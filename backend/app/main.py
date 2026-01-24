@@ -12,7 +12,14 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-from app.routers import auth_router, food_router, onboarding_router, users_router  # noqa: E402
+from app.routers import (  # noqa: E402
+    auth_router,
+    food_router,
+    onboarding_router,
+    statistics_router,
+    users_router,
+    weight_router,
+)
 
 
 @asynccontextmanager
@@ -38,6 +45,8 @@ app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(users_router, prefix=settings.API_PREFIX)
 app.include_router(food_router, prefix=settings.API_PREFIX)
 app.include_router(onboarding_router, prefix=settings.API_PREFIX)
+app.include_router(weight_router, prefix=settings.API_PREFIX)
+app.include_router(statistics_router, prefix=settings.API_PREFIX)
 
 app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 

@@ -1,0 +1,46 @@
+{
+  "title": "Statistics",
+  "subtitle": "Track your progress over time",
+  "periods": {
+    "week": "Week",
+    "month": "Month",
+    "custom": "Period"
+  },
+  "dateRange": {
+    "title": "Select Period",
+    "from": "From",
+    "to": "To",
+    "apply": "Apply"
+  },
+  "summary": {
+    "avgCalories": "Avg. Calories",
+    "totalEntries": "Total Entries",
+    "daysTracked": "{{count}} days tracked"
+  },
+  "charts": {
+    "calories": "Calorie Trend",
+    "weight": "Weight Progress",
+    "noData": "No data for this period",
+    "noWeightData": "Add weight entries to see your progress"
+  },
+  "weight": {
+    "addButton": "Add Weight",
+    "change": "Weight Change",
+    "modal": {
+      "title": "Add Weight Entry",
+      "weightLabel": "Weight",
+      "dateLabel": "Date",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "e.g., Morning weigh-in",
+      "invalidWeight": "Please enter a valid weight",
+      "duplicateDate": "Weight entry already exists for this date",
+      "error": "Failed to save weight entry"
+    }
+  },
+  "macros": {
+    "title": "Average Macros",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs"
+  }
+}

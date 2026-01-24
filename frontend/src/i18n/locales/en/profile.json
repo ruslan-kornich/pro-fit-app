@@ -27,6 +27,7 @@
     "namePlaceholder": "Your name",
     "height": "Height (cm)",
     "weight": "Weight (kg)",
+    "recordWeight": "Record weight to history",
     "age": "Age",
     "gender": "Gender",
     "male": "Male",
@@ -61,6 +62,7 @@
   "signOut": "Sign Out",
   "toast": {
     "updated": "Profile updated!",
-    "updateFailed": "Failed to update profile"
+    "updateFailed": "Failed to update profile",
+    "weightRecorded": "Weight recorded!"
   }
 }

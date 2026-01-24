@@ -4,19 +4,23 @@
     "history": "History",
     "add": "Add",
     "ai": "AI",
+    "statistics": "Stats",
     "profile": "Profile"
   },
   "buttons": {
     "save": "Save",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "reset": "Reset",
     "delete": "Delete",
     "loadMore": "Load More",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "retry": "Retry"
   },
   "units": {
     "kcal": "kcal",
     "grams": "g",
+    "kg": "kg",
     "protein": "protein",
     "fat": "fat",
     "carbs": "carbs"
