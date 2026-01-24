@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel
 
 
@@ -14,4 +12,4 @@ class NutritionSearchResult(BaseModel):
 
 class NutritionSearchResponse(BaseModel):
     query: str
-    results: List[NutritionSearchResult]
+    results: list[NutritionSearchResult]

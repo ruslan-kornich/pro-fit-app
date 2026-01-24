@@ -1,25 +1,24 @@
-from typing import Optional
-from uuid import UUID
 from datetime import date
-from fastapi import APIRouter, Depends, UploadFile, File, Query, HTTPException
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.db import get_db
 from app.config.jwt import get_current_user_id
-from app.services.food_service import FoodService
-from app.services.nutrition_search_service import nutrition_search_service, NutritionSearchError
 from app.schemas.food import (
-    FoodAnalysisResponse,
-    FoodEntryCreate,
-    FoodEntryWithIngredientsCreate,
-    FoodEntryResponse,
-    DailyStatsResponse,
-    RecommendationResponse,
-    FoodEntriesListResponse,
     AnalyzePhotoDetailedResponse,
+    DailyStatsResponse,
+    FoodAnalysisResponse,
+    FoodEntriesListResponse,
+    FoodEntryCreate,
+    FoodEntryResponse,
+    FoodEntryWithIngredientsCreate,
+    RecommendationResponse,
 )
 from app.schemas.nutrition_search import NutritionSearchResponse
-
+from app.services.food_service import FoodService
+from app.services.nutrition_search_service import NutritionSearchError, nutrition_search_service
 
 router = APIRouter(prefix="/food", tags=["Food"])
 
@@ -32,7 +31,7 @@ async def search_food_nutrition(
     try:
         return await nutrition_search_service.search(query)
     except NutritionSearchError as error:
-        raise HTTPException(status_code=400, detail=str(error))
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
 
 class AnalyzePhotoResponse(FoodAnalysisResponse):
@@ -109,8 +108,8 @@ async def create_entry_with_ingredients(
 
 @router.get("/entries", response_model=FoodEntriesListResponse)
 async def get_entries(
-    start_date: Optional[date] = Query(None),
-    end_date: Optional[date] = Query(None),
+    start_date: date | None = Query(None),
+    end_date: date | None = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     user_id: str = Depends(get_current_user_id),
@@ -139,7 +138,7 @@ async def delete_entry(
 
 @router.get("/daily-stats", response_model=DailyStatsResponse)
 async def get_daily_stats(
-    target_date: Optional[date] = Query(None),
+    target_date: date | None = Query(None),
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):

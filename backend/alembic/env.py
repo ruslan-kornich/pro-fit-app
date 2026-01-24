@@ -6,10 +6,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-
-from app.config.settings import settings
 from app.config.db import Base
-from app.models import UserModel, FoodEntryModel
+from app.config.settings import settings
 
 config = context.config
 

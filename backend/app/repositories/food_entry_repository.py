@@ -1,9 +1,9 @@
-from typing import List, Optional
+from datetime import UTC, date, datetime, time, timedelta
 from uuid import UUID
-from datetime import date, datetime, time, timezone, timedelta
-from sqlalchemy import select, func, and_
-from sqlalchemy.orm import selectinload
+
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.food_entries import FoodEntryModel
 from app.utils.repository import BaseRepository
@@ -13,7 +13,7 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
     def __init__(self, session: AsyncSession):
         super().__init__(FoodEntryModel, session)
 
-    async def get_by_id_with_ingredients(self, entry_id: UUID) -> Optional[FoodEntryModel]:
+    async def get_by_id_with_ingredients(self, entry_id: UUID) -> FoodEntryModel | None:
         query = (
             select(FoodEntryModel)
             .options(selectinload(FoodEntryModel.ingredients))
@@ -25,11 +25,11 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
     async def get_user_entries(
         self,
         user_id: UUID,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
         skip: int = 0,
         limit: int = 50,
-    ) -> List[FoodEntryModel]:
+    ) -> list[FoodEntryModel]:
         query = (
             select(FoodEntryModel)
             .options(selectinload(FoodEntryModel.ingredients))
@@ -42,11 +42,11 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         )
 
         if start_date:
-            start_datetime = datetime.combine(start_date, time.min, tzinfo=timezone.utc)
+            start_datetime = datetime.combine(start_date, time.min, tzinfo=UTC)
             query = query.where(FoodEntryModel.created_at >= start_datetime)
 
         if end_date:
-            end_datetime = datetime.combine(end_date, time.max, tzinfo=timezone.utc)
+            end_datetime = datetime.combine(end_date, time.max, tzinfo=UTC)
             query = query.where(FoodEntryModel.created_at <= end_datetime)
 
         query = query.order_by(FoodEntryModel.created_at.desc()).offset(skip).limit(limit)
@@ -57,8 +57,8 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
     async def count_user_entries(
         self,
         user_id: UUID,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
     ) -> int:
         query = select(func.count(FoodEntryModel.id)).where(
             and_(
@@ -68,11 +68,11 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         )
 
         if start_date:
-            start_datetime = datetime.combine(start_date, time.min, tzinfo=timezone.utc)
+            start_datetime = datetime.combine(start_date, time.min, tzinfo=UTC)
             query = query.where(FoodEntryModel.created_at >= start_datetime)
 
         if end_date:
-            end_datetime = datetime.combine(end_date, time.max, tzinfo=timezone.utc)
+            end_datetime = datetime.combine(end_date, time.max, tzinfo=UTC)
             query = query.where(FoodEntryModel.created_at <= end_datetime)
 
         result = await self.session.execute(query)
@@ -83,8 +83,8 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         user_id: UUID,
         target_date: date,
     ) -> dict:
-        start_datetime = datetime.combine(target_date, time.min, tzinfo=timezone.utc)
-        end_datetime = datetime.combine(target_date, time.max, tzinfo=timezone.utc)
+        start_datetime = datetime.combine(target_date, time.min, tzinfo=UTC)
+        end_datetime = datetime.combine(target_date, time.max, tzinfo=UTC)
 
         query = select(
             func.coalesce(func.sum(FoodEntryModel.calories), 0).label("total_calories"),
@@ -117,8 +117,8 @@ class FoodEntryRepository(BaseRepository[FoodEntryModel]):
         user_id: UUID,
         days: int = 7,
         limit: int = 50,
-    ) -> List[FoodEntryModel]:
-        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+    ) -> list[FoodEntryModel]:
+        cutoff_date = datetime.now(UTC) - timedelta(days=days)
 
         query = (
             select(FoodEntryModel)

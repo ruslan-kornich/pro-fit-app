@@ -2,12 +2,11 @@ import base64
 import json
 import logging
 import re
-from typing import Optional, List
 
 from openai import AsyncOpenAI
 
 from app.config.settings import settings
-from app.schemas.food import FoodAnalysisResponse, RecommendationResponse, DishAnalysisResponse, FoodItemAnalysis
+from app.schemas.food import DishAnalysisResponse, FoodAnalysisResponse, FoodItemAnalysis, RecommendationResponse
 from app.schemas.profiles import AICalorieRecommendationResponse
 
 logger = logging.getLogger(__name__)
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def extract_json_from_response(text: str) -> str:
     """Extract JSON object from response that may contain extra text."""
-    match = re.search(r'\{[\s\S]*\}', text)
+    match = re.search(r"\{[\s\S]*\}", text)
     if match:
         return match.group(0)
     return text
@@ -230,7 +229,7 @@ CRITICAL RULES:
                                 },
                             },
                         ],
-                    }
+                    },
                 ],
                 max_completion_tokens=1500,
             )
@@ -318,8 +317,8 @@ CRITICAL RULES:
         daily_protein: float,
         daily_fat: float,
         daily_carbs: float,
-        calorie_goal: Optional[int],
-        recent_foods: List[str],
+        calorie_goal: int | None,
+        recent_foods: list[str],
         language: str = "uk",
     ) -> RecommendationResponse:
         language_instruction = get_language_instruction(language)
@@ -329,12 +328,12 @@ CRITICAL RULES:
 Based on the following daily nutritional intake, provide personalized nutrition recommendations.
 
 Today's intake:
-- Calories: {daily_calories} kcal (goal: {calorie_goal or 'not set'} kcal)
+- Calories: {daily_calories} kcal (goal: {calorie_goal or "not set"} kcal)
 - Protein: {daily_protein:.1f}g
 - Fat: {daily_fat:.1f}g
 - Carbs: {daily_carbs:.1f}g
 
-Recent foods consumed: {', '.join(recent_foods) if recent_foods else 'No data'}
+Recent foods consumed: {", ".join(recent_foods) if recent_foods else "No data"}
 
 Return a JSON object with:
 - recommendations: array of 3-5 specific, actionable recommendations (strings)
@@ -379,13 +378,13 @@ Only return the JSON object, no additional text."""
 
     async def get_calorie_recommendation(
         self,
-        weight_kg: Optional[float],
-        height_cm: Optional[float],
-        age_years: Optional[int],
-        gender: Optional[str],
-        activity_level: Optional[float],
+        weight_kg: float | None,
+        height_cm: float | None,
+        age_years: int | None,
+        gender: str | None,
+        activity_level: float | None,
         goal: str,
-        current_calorie_norm: Optional[int],
+        current_calorie_norm: int | None,
         language: str = "uk",
     ) -> AICalorieRecommendationResponse:
         language_instruction = get_language_instruction(language)
@@ -411,13 +410,13 @@ Only return the JSON object, no additional text."""
 You are an expert nutritionist providing personalized calorie recommendations.
 
 User profile:
-- Weight: {weight_kg or 'not provided'} kg
-- Height: {height_cm or 'not provided'} cm
-- Age: {age_years or 'not provided'} years
-- Gender: {gender or 'not provided'}
+- Weight: {weight_kg or "not provided"} kg
+- Height: {height_cm or "not provided"} cm
+- Age: {age_years or "not provided"} years
+- Gender: {gender or "not provided"}
 - Activity level: {activity_desc}
 - Goal: {goal_desc}
-- Current calorie target: {current_calorie_norm or 'not set'} kcal/day
+- Current calorie target: {current_calorie_norm or "not set"} kcal/day
 
 Based on this profile, provide a personalized calorie recommendation using the Mifflin-St Jeor equation as a base, adjusted for activity level and goal.
 

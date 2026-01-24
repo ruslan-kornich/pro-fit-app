@@ -1,11 +1,12 @@
 from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.user_repository import UserRepository
-from app.services.profile_service import ProfileService
 from app.models.users import UserModel
-from app.schemas.users import UserUpdateRequest
+from app.repositories.user_repository import UserRepository
 from app.schemas.profiles import ProfileUpdateRequest
+from app.schemas.users import UserUpdateRequest
+from app.services.profile_service import ProfileService
 from app.utils.exceptions import NotFoundException
 
 
@@ -22,7 +23,7 @@ class UserService:
         return user
 
     async def update_user(self, user_id: UUID, request: UserUpdateRequest) -> UserModel:
-        user = await self.get_user(user_id)
+        await self.get_user(user_id)
 
         profile_update = ProfileUpdateRequest(
             name=request.name,

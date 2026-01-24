@@ -1,57 +1,57 @@
-from typing import Optional, List
+from datetime import date, datetime
 from uuid import UUID
-from datetime import datetime, date
+
 from pydantic import BaseModel
 
 
 class FoodAnalysisResponse(BaseModel):
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
-    confidence: Optional[float] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
+    confidence: float | None = None
 
 
 class FoodEntryCreate(BaseModel):
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
-    photo_url: Optional[str] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
+    photo_url: str | None = None
 
 
 class IngredientCreate(BaseModel):
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
 
 
 class FoodEntryWithIngredientsCreate(BaseModel):
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
-    photo_url: Optional[str] = None
-    ingredients: List[IngredientCreate] = []
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
+    photo_url: str | None = None
+    ingredients: list[IngredientCreate] = []
 
 
 class IngredientResponse(BaseModel):
     id: UUID
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
 
     class Config:
         from_attributes = True
@@ -60,17 +60,17 @@ class IngredientResponse(BaseModel):
 class FoodEntryResponse(BaseModel):
     id: UUID
     user_id: UUID
-    parent_id: Optional[UUID] = None
+    parent_id: UUID | None = None
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
-    photo_url: Optional[str] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
+    photo_url: str | None = None
     created_at: datetime
     updated_at: datetime
-    ingredients: List[IngredientResponse] = []
+    ingredients: list[IngredientResponse] = []
 
     class Config:
         from_attributes = True
@@ -82,20 +82,20 @@ class DailyStatsResponse(BaseModel):
     total_protein: float
     total_fat: float
     total_carbs: float
-    remaining_calories: Optional[int] = None
-    calorie_goal: Optional[int] = None
+    remaining_calories: int | None = None
+    calorie_goal: int | None = None
     entries_count: int
 
 
 class RecommendationResponse(BaseModel):
-    recommendations: List[str]
+    recommendations: list[str]
     insights: str
     protein_status: str
     balance_score: int
 
 
 class FoodEntriesListResponse(BaseModel):
-    entries: List[FoodEntryResponse]
+    entries: list[FoodEntryResponse]
     total: int
     page: int
     page_size: int
@@ -103,26 +103,29 @@ class FoodEntriesListResponse(BaseModel):
 
 class FoodItemAnalysis(BaseModel):
     """Single ingredient/product detected in the dish"""
+
     name: str
     calories: int
-    protein: Optional[float] = None
-    fat: Optional[float] = None
-    carbs: Optional[float] = None
-    grams: Optional[float] = None
+    protein: float | None = None
+    fat: float | None = None
+    carbs: float | None = None
+    grams: float | None = None
 
 
 class DishAnalysisResponse(BaseModel):
     """Full dish analysis with ingredient breakdown"""
+
     dish_name: str
     total_calories: int
     total_grams: float
     total_protein: float
     total_fat: float
     total_carbs: float
-    items: List[FoodItemAnalysis]
-    confidence: Optional[float] = None
+    items: list[FoodItemAnalysis]
+    confidence: float | None = None
 
 
 class AnalyzePhotoDetailedResponse(DishAnalysisResponse):
     """API response with photo URL"""
+
     photo_url: str

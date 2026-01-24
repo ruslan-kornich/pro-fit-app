@@ -1,29 +1,29 @@
 import logging
-from typing import Optional, List
+from datetime import UTC, date, datetime
 from uuid import UUID
-from datetime import date, timezone, datetime
+
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger(__name__)
-
-from app.repositories.food_entry_repository import FoodEntryRepository
-from app.repositories.user_repository import UserRepository
-from app.repositories.profile_repository import ProfileRepository
 from app.models.food_entries import FoodEntryModel
+from app.repositories.food_entry_repository import FoodEntryRepository
+from app.repositories.profile_repository import ProfileRepository
+from app.repositories.user_repository import UserRepository
 from app.schemas.food import (
-    FoodAnalysisResponse,
-    FoodEntryCreate,
-    FoodEntryWithIngredientsCreate,
-    FoodEntryResponse,
     DailyStatsResponse,
-    RecommendationResponse,
-    FoodEntriesListResponse,
     DishAnalysisResponse,
+    FoodAnalysisResponse,
+    FoodEntriesListResponse,
+    FoodEntryCreate,
+    FoodEntryResponse,
+    FoodEntryWithIngredientsCreate,
+    RecommendationResponse,
 )
 from app.services.openai_service import openai_service
+from app.utils.exceptions import BadRequestException, NotFoundException
 from app.utils.file_upload import save_upload_file
-from app.utils.exceptions import NotFoundException, BadRequestException
+
+logger = logging.getLogger(__name__)
 
 
 class FoodService:
@@ -40,7 +40,7 @@ class FoodService:
             return profile.language
         return "uk"
 
-    async def analyze_photo(self, file: UploadFile, user_id: Optional[UUID] = None) -> tuple[FoodAnalysisResponse, str]:
+    async def analyze_photo(self, file: UploadFile, user_id: UUID | None = None) -> tuple[FoodAnalysisResponse, str]:
         if not file.content_type or not file.content_type.startswith("image/"):
             raise BadRequestException("File must be an image")
 
@@ -61,7 +61,9 @@ class FoodService:
 
         return analysis, photo_url
 
-    async def analyze_photo_detailed(self, file: UploadFile, user_id: Optional[UUID] = None) -> tuple[DishAnalysisResponse, str]:
+    async def analyze_photo_detailed(
+        self, file: UploadFile, user_id: UUID | None = None
+    ) -> tuple[DishAnalysisResponse, str]:
         logger.info(f"analyze_photo_detailed called with file: {file.filename}, content_type: {file.content_type}")
 
         if not file.content_type or not file.content_type.startswith("image/"):
@@ -85,7 +87,9 @@ class FoodService:
             mime_type=file.content_type,
             language=language,
         )
-        logger.info(f"Analysis received: dish_name={analysis.dish_name}, total_calories={analysis.total_calories}, items_count={len(analysis.items)}")
+        logger.info(
+            f"Analysis received: dish_name={analysis.dish_name}, total_calories={analysis.total_calories}, items_count={len(analysis.items)}"
+        )
 
         return analysis, photo_url
 
@@ -139,8 +143,8 @@ class FoodService:
     async def get_entries(
         self,
         user_id: UUID,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
         page: int = 1,
         page_size: int = 20,
     ) -> FoodEntriesListResponse:
@@ -176,10 +180,10 @@ class FoodService:
     async def get_daily_stats(
         self,
         user_id: UUID,
-        target_date: Optional[date] = None,
+        target_date: date | None = None,
     ) -> DailyStatsResponse:
         if not target_date:
-            target_date = datetime.now(timezone.utc).date()
+            target_date = datetime.now(UTC).date()
 
         totals = await self.food_repository.get_daily_totals(user_id, target_date)
 

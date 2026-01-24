@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../components/Card';
 import Loading from '../components/Loading';
@@ -14,7 +14,7 @@ export default function RecommendationsPage() {
   const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getAIRecommendations();
@@ -24,11 +24,11 @@ export default function RecommendationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     loadRecommendations();
-  }, []);
+  }, [loadRecommendations]);
 
   const getProteinStatusColor = (status: string) => {
     switch (status) {

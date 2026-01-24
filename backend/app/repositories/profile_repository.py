@@ -1,5 +1,5 @@
-from typing import Optional
 from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,10 +11,8 @@ class ProfileRepository(BaseRepository[ProfileModel]):
     def __init__(self, session: AsyncSession):
         super().__init__(ProfileModel, session)
 
-    async def get_by_user_id(self, user_id: UUID) -> Optional[ProfileModel]:
-        result = await self.session.execute(
-            select(ProfileModel).where(ProfileModel.user_id == user_id)
-        )
+    async def get_by_user_id(self, user_id: UUID) -> ProfileModel | None:
+        result = await self.session.execute(select(ProfileModel).where(ProfileModel.user_id == user_id))
         return result.scalar_one_or_none()
 
     async def create_for_user(self, user_id: UUID, **kwargs) -> ProfileModel:
@@ -23,17 +21,17 @@ class ProfileRepository(BaseRepository[ProfileModel]):
     async def update_profile(
         self,
         profile_id: UUID,
-        name: Optional[str] = None,
-        height: Optional[float] = None,
-        weight: Optional[float] = None,
-        age: Optional[int] = None,
-        gender: Optional[str] = None,
-        activity_level: Optional[float] = None,
-        language: Optional[str] = None,
-        goal: Optional[str] = None,
-        daily_calorie_norm: Optional[int] = None,
-        is_calorie_goal_manual: Optional[bool] = None,
-    ) -> Optional[ProfileModel]:
+        name: str | None = None,
+        height: float | None = None,
+        weight: float | None = None,
+        age: int | None = None,
+        gender: str | None = None,
+        activity_level: float | None = None,
+        language: str | None = None,
+        goal: str | None = None,
+        daily_calorie_norm: int | None = None,
+        is_calorie_goal_manual: bool | None = None,
+    ) -> ProfileModel | None:
         return await self.update(
             profile_id,
             name=name,

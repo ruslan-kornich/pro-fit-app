@@ -15,10 +15,6 @@ const hasCameraSupport = () => {
   return 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
 };
 
-const isMobileDevice = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-};
-
 export default function PhotoUpload({
   onPhotoSelect,
   previewUrl,
@@ -27,12 +23,8 @@ export default function PhotoUpload({
 }: PhotoUploadProps) {
   const { t } = useTranslation('food');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
-
-  const canUseMediaDevices = hasCameraSupport();
-  const isMobile = isMobileDevice();
 
   const handleFileSelect = (file: File) => {
     if (file.type.startsWith('image/')) {

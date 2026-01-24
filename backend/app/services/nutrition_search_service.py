@@ -1,10 +1,9 @@
 import logging
-from typing import List, Optional
 
 import httpx
 
 from app.config.settings import settings
-from app.schemas.nutrition_search import NutritionSearchResult, NutritionSearchResponse
+from app.schemas.nutrition_search import NutritionSearchResponse, NutritionSearchResult
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +19,9 @@ class NutritionSearchService:
 
     async def search(self, query: str) -> NutritionSearchResponse:
         if not self.api_key:
-            raise NutritionSearchError("USDA API key is not configured. Get free key at https://fdc.nal.usda.gov/api-key-signup.html")
+            raise NutritionSearchError(
+                "USDA API key is not configured. Get free key at https://fdc.nal.usda.gov/api-key-signup.html"
+            )
 
         request_body = {
             "query": query,
@@ -50,17 +51,17 @@ class NutritionSearchService:
 
         except httpx.TimeoutException:
             logger.error("USDA API request timed out")
-            raise NutritionSearchError("Request timed out. Please try again.")
+            raise NutritionSearchError("Request timed out. Please try again.") from None
         except httpx.HTTPStatusError as error:
             logger.error(f"USDA API HTTP error: {error}")
-            raise NutritionSearchError(f"API error: {error.response.status_code}")
+            raise NutritionSearchError(f"API error: {error.response.status_code}") from error
         except NutritionSearchError:
             raise
         except Exception as error:
             logger.error(f"USDA API unexpected error: {error}")
-            raise NutritionSearchError("An unexpected error occurred")
+            raise NutritionSearchError("An unexpected error occurred") from error
 
-    def _parse_results(self, data: dict) -> List[NutritionSearchResult]:
+    def _parse_results(self, data: dict) -> list[NutritionSearchResult]:
         results = []
         foods = data.get("foods", [])
 

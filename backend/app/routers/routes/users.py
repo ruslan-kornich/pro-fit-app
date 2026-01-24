@@ -1,14 +1,14 @@
 from uuid import UUID
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.db import get_db
 from app.config.jwt import get_current_user_id
-from app.services.user_service import UserService
-from app.services.profile_service import ProfileService
-from app.schemas.users import UserResponse, UserUpdateRequest
 from app.schemas.profiles import AICalorieRecommendationResponse
-
+from app.schemas.users import UserResponse, UserUpdateRequest
+from app.services.profile_service import ProfileService
+from app.services.user_service import UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

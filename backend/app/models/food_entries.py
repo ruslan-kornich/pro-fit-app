@@ -1,12 +1,13 @@
 from decimal import Decimal
-from typing import Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from uuid import UUID
-from sqlalchemy import String, Integer, ForeignKey, Numeric
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from sqlalchemy import ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.config.db import Base
-from app.utils.model import UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin
+from app.utils.model import CreatedUpdatedFieldsMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
     from app.models.users import UserModel
@@ -22,7 +23,7 @@ class FoodEntryModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
         index=True,
     )
 
-    parent_id: Mapped[Optional[UUID]] = mapped_column(
+    parent_id: Mapped[UUID | None] = mapped_column(
         PG_UUID(as_uuid=True),
         ForeignKey("food_entries.id", ondelete="CASCADE"),
         nullable=True,
@@ -31,15 +32,15 @@ class FoodEntryModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     calories: Mapped[int] = mapped_column(Integer, nullable=False)
-    protein: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
-    fat: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
-    carbs: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
-    grams: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
-    photo_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    protein: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    fat: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    carbs: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    grams: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="food_entries")
 
-    ingredients: Mapped[List["FoodEntryModel"]] = relationship(
+    ingredients: Mapped[list["FoodEntryModel"]] = relationship(
         "FoodEntryModel",
         back_populates="parent",
         cascade="all, delete-orphan",

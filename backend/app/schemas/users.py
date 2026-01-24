@@ -1,17 +1,18 @@
-from typing import Optional, Literal
-from uuid import UUID
 from datetime import datetime
+from typing import Literal
+from uuid import UUID
+
 from pydantic import BaseModel, EmailStr, Field
 
-from app.schemas.profiles import ProfileResponse
 from app.schemas.onboarding import OnboardingResponse
+from app.schemas.profiles import ProfileResponse
 
 
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
-    profile: Optional[ProfileResponse] = None
-    onboarding: Optional[OnboardingResponse] = None
+    profile: ProfileResponse | None = None
+    onboarding: OnboardingResponse | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -20,13 +21,13 @@ class UserResponse(BaseModel):
 
 
 class UserUpdateRequest(BaseModel):
-    name: Optional[str] = None
-    height: Optional[float] = None
-    weight: Optional[float] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    activity_level: Optional[float] = None
-    language: Optional[Literal["uk", "en"]] = None
-    goal: Optional[Literal["lose", "maintain", "gain"]] = None
-    daily_calorie_norm: Optional[int] = Field(None, ge=500, le=10000)
-    is_calorie_goal_manual: Optional[bool] = None
+    name: str | None = None
+    height: float | None = None
+    weight: float | None = None
+    age: int | None = None
+    gender: str | None = None
+    activity_level: float | None = None
+    language: Literal["uk", "en"] | None = None
+    goal: Literal["lose", "maintain", "gain"] | None = None
+    daily_calorie_norm: int | None = Field(None, ge=500, le=10000)
+    is_calorie_goal_manual: bool | None = None

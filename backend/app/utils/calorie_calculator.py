@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Optional
 
 
 class Gender(str, Enum):
@@ -28,12 +27,7 @@ GOAL_CALORIE_ADJUSTMENTS = {
 }
 
 
-def calculate_bmr(
-    weight_kg: float,
-    height_cm: float,
-    age_years: int,
-    gender: Gender
-) -> float:
+def calculate_bmr(weight_kg: float, height_cm: float, age_years: int, gender: Gender) -> float:
     """
     Calculate Basal Metabolic Rate using Mifflin-St Jeor equation.
 
@@ -49,13 +43,13 @@ def calculate_bmr(
 
 
 def calculate_daily_calorie_norm(
-    weight_kg: Optional[float],
-    height_cm: Optional[float],
-    age_years: Optional[int],
-    gender: Optional[str],
-    activity_level: Optional[float] = None,
-    goal: Optional[str] = None,
-) -> Optional[int]:
+    weight_kg: float | None,
+    height_cm: float | None,
+    age_years: int | None,
+    gender: str | None,
+    activity_level: float | None = None,
+    goal: str | None = None,
+) -> int | None:
     """
     Calculate Total Daily Energy Expenditure (TDEE) with goal adjustment.
     TDEE = BMR × activity_level + goal_adjustment

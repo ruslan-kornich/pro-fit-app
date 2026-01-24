@@ -1,12 +1,13 @@
 from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.profile_repository import ProfileRepository
 from app.models.profiles import ProfileModel
-from app.schemas.profiles import ProfileUpdateRequest, AICalorieRecommendationResponse
-from app.utils.exceptions import NotFoundException
-from app.utils.calorie_calculator import calculate_daily_calorie_norm
+from app.repositories.profile_repository import ProfileRepository
+from app.schemas.profiles import AICalorieRecommendationResponse, ProfileUpdateRequest
 from app.services.openai_service import openai_service
+from app.utils.calorie_calculator import calculate_daily_calorie_norm
+from app.utils.exceptions import NotFoundException
 
 
 class ProfileService:
@@ -23,9 +24,7 @@ class ProfileService:
     async def create_profile(self, user_id: UUID) -> ProfileModel:
         return await self.profile_repository.create_for_user(user_id)
 
-    async def update_profile(
-        self, user_id: UUID, request: ProfileUpdateRequest
-    ) -> ProfileModel:
+    async def update_profile(self, user_id: UUID, request: ProfileUpdateRequest) -> ProfileModel:
         profile = await self.get_profile(user_id)
 
         update_data = request.model_dump(exclude_unset=True)
@@ -85,9 +84,7 @@ class ProfileService:
 
         return updated_profile
 
-    async def get_ai_calorie_recommendation(
-        self, user_id: UUID
-    ) -> AICalorieRecommendationResponse:
+    async def get_ai_calorie_recommendation(self, user_id: UUID) -> AICalorieRecommendationResponse:
         profile = await self.get_profile(user_id)
 
         return await openai_service.get_calorie_recommendation(

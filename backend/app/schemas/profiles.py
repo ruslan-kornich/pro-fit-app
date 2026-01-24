@@ -1,20 +1,21 @@
-from typing import Optional, Literal, List
-from uuid import UUID
 from datetime import datetime
+from typing import Literal
+from uuid import UUID
+
 from pydantic import BaseModel, Field, field_validator
 
 
 class ProfileResponse(BaseModel):
     id: UUID
-    name: Optional[str] = None
-    height: Optional[float] = None
-    weight: Optional[float] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    activity_level: Optional[float] = None
+    name: str | None = None
+    height: float | None = None
+    weight: float | None = None
+    age: int | None = None
+    gender: str | None = None
+    activity_level: float | None = None
     language: str
     goal: str
-    daily_calorie_norm: Optional[int] = None
+    daily_calorie_norm: int | None = None
     is_calorie_goal_manual: bool = False
     created_at: datetime
     updated_at: datetime
@@ -24,16 +25,16 @@ class ProfileResponse(BaseModel):
 
 
 class ProfileUpdateRequest(BaseModel):
-    name: Optional[str] = None
-    height: Optional[float] = None
-    weight: Optional[float] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    activity_level: Optional[float] = None
-    language: Optional[Literal["uk", "en"]] = None
-    goal: Optional[Literal["lose", "maintain", "gain"]] = None
-    daily_calorie_norm: Optional[int] = Field(None, ge=500, le=10000)
-    is_calorie_goal_manual: Optional[bool] = None
+    name: str | None = None
+    height: float | None = None
+    weight: float | None = None
+    age: int | None = None
+    gender: str | None = None
+    activity_level: float | None = None
+    language: Literal["uk", "en"] | None = None
+    goal: Literal["lose", "maintain", "gain"] | None = None
+    daily_calorie_norm: int | None = Field(None, ge=500, le=10000)
+    is_calorie_goal_manual: bool | None = None
 
     @field_validator("language", mode="before")
     @classmethod
@@ -55,5 +56,5 @@ class AICalorieRecommendationResponse(BaseModel):
     recommended_calories_max: int
     recommended_calories_optimal: int
     explanation: str
-    personalized_tips: List[str]
-    factors_considered: List[str]
+    personalized_tips: list[str]
+    factors_considered: list[str]

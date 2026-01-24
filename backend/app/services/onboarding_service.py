@@ -1,10 +1,11 @@
 from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.onboarding_repository import OnboardingRepository
 from app.models.onboarding import OnboardingModel
+from app.repositories.onboarding_repository import OnboardingRepository
 from app.schemas.onboarding import OnboardingStepUpdateRequest
-from app.utils.exceptions import NotFoundException, BadRequestException
+from app.utils.exceptions import BadRequestException, NotFoundException
 
 
 class OnboardingService:
@@ -18,9 +19,7 @@ class OnboardingService:
             onboarding = await self.onboarding_repository.create_for_user(user_id)
         return onboarding
 
-    async def update_step(
-        self, user_id: UUID, request: OnboardingStepUpdateRequest
-    ) -> OnboardingModel:
+    async def update_step(self, user_id: UUID, request: OnboardingStepUpdateRequest) -> OnboardingModel:
         onboarding = await self.get_or_create_onboarding(user_id)
 
         if onboarding.is_completed:

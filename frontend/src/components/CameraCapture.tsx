@@ -62,17 +62,21 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
   useEffect(() => {
     checkMultipleCameras();
     startCamera();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  useEffect(() => {
+    startCamera();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [facingMode]);
+
+  useEffect(() => {
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, []);
-
-  useEffect(() => {
-    startCamera();
-  }, [facingMode]);
+  }, [stream]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;

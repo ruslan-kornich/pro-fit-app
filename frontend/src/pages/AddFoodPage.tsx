@@ -16,6 +16,11 @@ type Tab = 'photo' | 'search' | 'manual';
 
 interface EditableItem extends FoodItemAnalysis {
   selected: boolean;
+  originalGrams: number;
+  originalCalories: number;
+  originalProtein: number | null;
+  originalFat: number | null;
+  originalCarbs: number | null;
 }
 
 export default function AddFoodPage() {
@@ -52,6 +57,11 @@ export default function AddFoodPage() {
       const items: EditableItem[] = result.items.map(item => ({
         ...item,
         selected: true,
+        originalGrams: item.grams || 100,
+        originalCalories: item.calories,
+        originalProtein: item.protein,
+        originalFat: item.fat,
+        originalCarbs: item.carbs,
       }));
       setEditableItems(items);
 
@@ -87,6 +97,40 @@ export default function AddFoodPage() {
       setFat(totalFat.toString());
       setCarbs(totalCarbs.toString());
       setGrams(totalGrams.toString());
+
+      return updated;
+    });
+  };
+
+  const updateItemGrams = (index: number, newGrams: string) => {
+    setEditableItems(prev => {
+      const updated = [...prev];
+      const item = updated[index];
+      const gramsValue = parseFloat(newGrams) || 0;
+
+      const ratio = item.originalGrams > 0 ? gramsValue / item.originalGrams : 0;
+
+      updated[index] = {
+        ...item,
+        grams: gramsValue,
+        calories: Math.round(item.originalCalories * ratio),
+        protein: item.originalProtein !== null ? Number((item.originalProtein * ratio).toFixed(1)) : null,
+        fat: item.originalFat !== null ? Number((item.originalFat * ratio).toFixed(1)) : null,
+        carbs: item.originalCarbs !== null ? Number((item.originalCarbs * ratio).toFixed(1)) : null,
+      };
+
+      const selectedItems = updated.filter(i => i.selected);
+      const totalCalories = selectedItems.reduce((sum, i) => sum + i.calories, 0);
+      const totalProtein = selectedItems.reduce((sum, i) => sum + (i.protein || 0), 0);
+      const totalFat = selectedItems.reduce((sum, i) => sum + (i.fat || 0), 0);
+      const totalCarbs = selectedItems.reduce((sum, i) => sum + (i.carbs || 0), 0);
+      const totalGrams = selectedItems.reduce((sum, i) => sum + (i.grams || 0), 0);
+
+      setCalories(totalCalories.toString());
+      setProtein(totalProtein.toFixed(1));
+      setFat(totalFat.toFixed(1));
+      setCarbs(totalCarbs.toFixed(1));
+      setGrams(totalGrams.toFixed(1));
 
       return updated;
     });
@@ -338,9 +382,33 @@ export default function AddFoodPage() {
 
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate">{item.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {item.grams}{tCommon('units.grams')}
-                        </p>
+                        <div
+                          className="flex items-center gap-1 mt-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => updateItemGrams(index, String(Math.max(0, (item.grams || 0) - 10)))}
+                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded"
+                          >
+                            −
+                          </button>
+                          <input
+                            type="number"
+                            value={item.grams || ''}
+                            onChange={(e) => updateItemGrams(index, e.target.value)}
+                            className="w-14 px-1 py-0.5 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            min="0"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => updateItemGrams(index, String((item.grams || 0) + 10))}
+                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:bg-gray-200 rounded"
+                          >
+                            +
+                          </button>
+                          <span className="text-sm text-gray-500">{tCommon('units.grams')}</span>
+                        </div>
                       </div>
 
                       <div className="text-right">

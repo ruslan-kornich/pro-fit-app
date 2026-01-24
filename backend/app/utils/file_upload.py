@@ -1,11 +1,11 @@
 import os
 import uuid
-import aiofiles
 from pathlib import Path
+
+import aiofiles
 from fastapi import UploadFile
 
 from app.config.settings import settings
-
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 

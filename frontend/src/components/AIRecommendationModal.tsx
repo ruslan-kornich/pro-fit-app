@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAICalorieRecommendation } from '../api/users';
 import type { AICalorieRecommendation } from '../types/user';
@@ -21,13 +21,7 @@ export default function AIRecommendationModal({
   const [error, setError] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<AICalorieRecommendation | null>(null);
 
-  useEffect(() => {
-    if (isOpen && !recommendation) {
-      fetchRecommendation();
-    }
-  }, [isOpen]);
-
-  const fetchRecommendation = async () => {
+  const fetchRecommendation = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -38,7 +32,13 @@ export default function AIRecommendationModal({
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    if (isOpen && !recommendation) {
+      fetchRecommendation();
+    }
+  }, [isOpen, recommendation, fetchRecommendation]);
 
   const handleClose = () => {
     setRecommendation(null);

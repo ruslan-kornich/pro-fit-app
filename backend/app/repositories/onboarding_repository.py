@@ -1,5 +1,5 @@
-from typing import Optional
 from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,17 +11,15 @@ class OnboardingRepository(BaseRepository[OnboardingModel]):
     def __init__(self, session: AsyncSession):
         super().__init__(OnboardingModel, session)
 
-    async def get_by_user_id(self, user_id: UUID) -> Optional[OnboardingModel]:
-        result = await self.session.execute(
-            select(OnboardingModel).where(OnboardingModel.user_id == user_id)
-        )
+    async def get_by_user_id(self, user_id: UUID) -> OnboardingModel | None:
+        result = await self.session.execute(select(OnboardingModel).where(OnboardingModel.user_id == user_id))
         return result.scalar_one_or_none()
 
     async def create_for_user(self, user_id: UUID) -> OnboardingModel:
         return await self.create(user_id=user_id, current_step=1)
 
-    async def update_step(self, onboarding_id: UUID, step: int) -> Optional[OnboardingModel]:
+    async def update_step(self, onboarding_id: UUID, step: int) -> OnboardingModel | None:
         return await self.update(onboarding_id, current_step=step)
 
-    async def complete(self, onboarding_id: UUID) -> Optional[OnboardingModel]:
+    async def complete(self, onboarding_id: UUID) -> OnboardingModel | None:
         return await self.update(onboarding_id, is_completed=True)

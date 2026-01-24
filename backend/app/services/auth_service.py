@@ -1,10 +1,11 @@
 from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories.user_repository import UserRepository
-from app.services.profile_service import ProfileService
-from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, RefreshRequest
 from app.config.jwt import create_access_token, create_refresh_token, decode_token
+from app.repositories.user_repository import UserRepository
+from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse
+from app.services.profile_service import ProfileService
 from app.utils.auth import hash_password, verify_password
 from app.utils.exceptions import ConflictException, UnauthorizedException
 

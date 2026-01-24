@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING
 from uuid import UUID
-from sqlalchemy import Integer, ForeignKey, Boolean
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from sqlalchemy import Boolean, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.config.db import Base
-from app.utils.model import UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin
+from app.utils.model import CreatedUpdatedFieldsMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
     from app.models.users import UserModel

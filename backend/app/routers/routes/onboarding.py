@@ -1,12 +1,12 @@
 from uuid import UUID
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.db import get_db
 from app.config.jwt import get_current_user_id
-from app.services.onboarding_service import OnboardingService
 from app.schemas.onboarding import OnboardingResponse, OnboardingStepUpdateRequest
-
+from app.services.onboarding_service import OnboardingService
 
 router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
 

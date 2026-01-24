@@ -1,13 +1,13 @@
-from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, RefreshRequest
-from app.schemas.users import UserResponse, UserUpdateRequest
+from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse
 from app.schemas.food import (
+    DailyStatsResponse,
     FoodAnalysisResponse,
+    FoodEntriesListResponse,
     FoodEntryCreate,
     FoodEntryResponse,
-    DailyStatsResponse,
     RecommendationResponse,
-    FoodEntriesListResponse,
 )
+from app.schemas.users import UserResponse, UserUpdateRequest
 
 __all__ = [
     "RegisterRequest",
