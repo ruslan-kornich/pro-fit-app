@@ -26,9 +26,6 @@ async def get_statistics(
         return await service.get_statistics(UUID(user_id), start_date, end_date)
 
     end = date.today()
-    if period == "month":
-        start = end - timedelta(days=29)
-    else:
-        start = end - timedelta(days=6)
+    start = end - timedelta(days=29) if period == "month" else end - timedelta(days=6)
 
     return await service.get_statistics(UUID(user_id), start, end)

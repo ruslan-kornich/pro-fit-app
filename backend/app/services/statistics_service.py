@@ -5,7 +5,6 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.food_entries import FoodEntryModel
-from app.models.weight_entries import WeightEntryModel
 from app.repositories.user_repository import UserRepository
 from app.repositories.weight_entry_repository import WeightEntryRepository
 from app.schemas.statistics import (

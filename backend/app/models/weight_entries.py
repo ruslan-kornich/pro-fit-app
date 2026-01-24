@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import Date, ForeignKey, Index, Numeric, String
@@ -26,7 +26,7 @@ class WeightEntryModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
 
     weight: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     recorded_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
-    note: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    note: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="weight_entries")
 
