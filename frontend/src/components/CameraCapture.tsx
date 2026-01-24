@@ -122,8 +122,8 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
   } as React.CSSProperties;
 
   const cameraContent = (
-    <div className="camera-overlay fixed inset-0 z-[9999] bg-black flex flex-col">
-      <div className="flex-1 relative">
+    <div className="camera-overlay fixed inset-0 z-[9999] bg-black">
+      <div className="absolute inset-0">
         {error ? (
           <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
             <div>
@@ -157,8 +157,8 @@ export default function CameraCapture({ onCapture, onCancel }: CameraCaptureProp
       </div>
 
       <div
-        className="bg-black/80 px-4 pt-6"
-        style={{ paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 2rem + 10px), calc(6rem + 10px))' }}
+        className="absolute left-0 right-0 bg-black/80 px-4 py-6"
+        style={{ bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 10px), 10px)' }}
       >
         <div className="flex items-center justify-between max-w-md mx-auto">
           <button
