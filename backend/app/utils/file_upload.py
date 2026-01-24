@@ -45,7 +45,7 @@ async def save_upload_file(file: UploadFile, subfolder: str = "") -> str:
             raise ValueError(f"File too large. Max size: {settings.MAX_UPLOAD_SIZE / 1024 / 1024}MB")
         await buffer.write(content)
 
-    relative_path = str(file_path)
+    relative_path = "/" + str(file_path)
     return relative_path
 
 
