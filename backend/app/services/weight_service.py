@@ -26,9 +26,7 @@ class WeightService:
     ) -> WeightEntryResponse:
         existing = await self.weight_repository.get_by_date(user_id, entry_data.recorded_date)
         if existing:
-            raise BadRequestException(
-                f"Weight entry already exists for {entry_data.recorded_date}"
-            )
+            raise BadRequestException(f"Weight entry already exists for {entry_data.recorded_date}")
 
         entry = await self.weight_repository.create(
             user_id=user_id,
@@ -39,9 +37,7 @@ class WeightService:
 
         latest = await self.weight_repository.get_latest(user_id)
         if latest and latest.id == entry.id:
-            await self.profile_repository.update_by_user_id(
-                user_id, weight=entry_data.weight
-            )
+            await self.profile_repository.update_by_user_id(user_id, weight=entry_data.weight)
 
         return WeightEntryResponse.model_validate(entry)
 
@@ -51,9 +47,7 @@ class WeightService:
         start_date: date | None = None,
         end_date: date | None = None,
     ) -> WeightHistoryResponse:
-        entries = await self.weight_repository.get_user_entries(
-            user_id, start_date, end_date
-        )
+        entries = await self.weight_repository.get_user_entries(user_id, start_date, end_date)
 
         start_weight = None
         current_weight = None

@@ -30,17 +30,10 @@ class StatisticsService:
         user = await self.user_repository.get_by_id(user_id)
         calorie_goal = user.profile.daily_calorie_norm if user and user.profile else None
 
-        daily_stats = await self._get_daily_food_stats(
-            user_id, start_date, end_date, calorie_goal
-        )
+        daily_stats = await self._get_daily_food_stats(user_id, start_date, end_date, calorie_goal)
 
-        weight_entries = await self.weight_repository.get_user_entries(
-            user_id, start_date, end_date
-        )
-        weight_data = [
-            WeightDataPoint(date=e.recorded_date, weight=float(e.weight))
-            for e in reversed(weight_entries)
-        ]
+        weight_entries = await self.weight_repository.get_user_entries(user_id, start_date, end_date)
+        weight_data = [WeightDataPoint(date=e.recorded_date, weight=float(e.weight)) for e in reversed(weight_entries)]
 
         averages = self._calculate_averages(daily_stats)
         days_with_entries = sum(1 for d in daily_stats if d.entries_count > 0)

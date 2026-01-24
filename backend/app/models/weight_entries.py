@@ -30,6 +30,4 @@ class WeightEntryModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
 
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="weight_entries")
 
-    __table_args__ = (
-        Index("ix_weight_entries_user_date", "user_id", "recorded_date", unique=True),
-    )
+    __table_args__ = (Index("ix_weight_entries_user_date", "user_id", "recorded_date", unique=True),)
