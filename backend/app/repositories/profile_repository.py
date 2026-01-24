@@ -45,3 +45,9 @@ class ProfileRepository(BaseRepository[ProfileModel]):
             daily_calorie_norm=daily_calorie_norm,
             is_calorie_goal_manual=is_calorie_goal_manual,
         )
+
+    async def update_by_user_id(self, user_id: UUID, **kwargs) -> ProfileModel | None:
+        profile = await self.get_by_user_id(user_id)
+        if not profile:
+            return None
+        return await self.update(profile.id, **kwargs)

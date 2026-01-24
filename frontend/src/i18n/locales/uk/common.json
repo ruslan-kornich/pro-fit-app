@@ -4,19 +4,23 @@
     "history": "Історія",
     "add": "Додати",
     "ai": "ШІ",
+    "statistics": "Стат.",
     "profile": "Профіль"
   },
   "buttons": {
     "save": "Зберегти",
+    "saving": "Зберігаю...",
     "cancel": "Скасувати",
     "reset": "Скинути",
     "delete": "Видалити",
     "loadMore": "Завантажити ще",
-    "refresh": "Оновити"
+    "refresh": "Оновити",
+    "retry": "Повторити"
   },
   "units": {
     "kcal": "ккал",
     "grams": "г",
+    "kg": "кг",
     "protein": "білки",
     "fat": "жири",
     "carbs": "вуглеводи"

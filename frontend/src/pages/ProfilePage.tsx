@@ -5,7 +5,9 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import AIRecommendationModal from '../components/AIRecommendationModal';
+import WeightEntryModal from '../features/statistics/WeightEntryModal';
 import { updateCurrentUser } from '../api/users';
+import { createWeightEntry } from '../api/weight';
 import { toast } from '../utils/toast';
 import { cn } from '../utils/cn';
 import type { Goal, Language } from '../types/user';
@@ -28,6 +30,7 @@ export default function ProfilePage() {
   const [isCalorieGoalManual, setIsCalorieGoalManual] = useState(false);
   const [isEditingCalories, setIsEditingCalories] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showWeightModal, setShowWeightModal] = useState(false);
 
   const ACTIVITY_LEVELS = [
     { value: 1.2, labelKey: 'activityLevel.sedentary', descKey: 'activityLevel.sedentaryDesc' },
@@ -97,6 +100,12 @@ export default function ProfilePage() {
     setCalorieGoal(calories.toString());
     setIsCalorieGoalManual(true);
     setShowAIModal(false);
+  };
+
+  const handleSaveWeight = async (data: { weight: number; recorded_date: string; note?: string | null }) => {
+    await createWeightEntry(data);
+    setWeight(data.weight.toString());
+    toast.success(t('toast.weightRecorded'));
   };
 
   return (
@@ -229,13 +238,30 @@ export default function ProfilePage() {
               onChange={(event) => setHeight(event.target.value)}
               placeholder="175"
             />
-            <Input
-              label={t('personalInfo.weight')}
-              type="number"
-              value={weight}
-              onChange={(event) => setWeight(event.target.value)}
-              placeholder="70"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('personalInfo.weight')}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={weight}
+                  onChange={(event) => setWeight(event.target.value)}
+                  placeholder="70"
+                  className="flex-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowWeightModal(true)}
+                  className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  title={t('personalInfo.recordWeight')}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
           <Input
@@ -348,6 +374,12 @@ export default function ProfilePage() {
       <Button variant="secondary" className="w-full" onClick={logout}>
         {t('signOut')}
       </Button>
+
+      <WeightEntryModal
+        isOpen={showWeightModal}
+        onClose={() => setShowWeightModal(false)}
+        onSubmit={handleSaveWeight}
+      />
     </div>
   );
 }

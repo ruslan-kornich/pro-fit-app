@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from app.models.food_entries import FoodEntryModel
     from app.models.onboarding import OnboardingModel
     from app.models.profiles import ProfileModel
+    from app.models.weight_entries import WeightEntryModel
 
 
 class UserModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
@@ -38,4 +39,10 @@ class UserModel(Base, UUIDPrimaryKeyMixin, CreatedUpdatedFieldsMixin):
         uselist=False,
         cascade="all, delete-orphan",
         lazy="joined",
+    )
+
+    weight_entries: Mapped[list["WeightEntryModel"]] = relationship(
+        "WeightEntryModel",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )

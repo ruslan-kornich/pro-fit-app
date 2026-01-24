@@ -27,6 +27,7 @@
     "namePlaceholder": "Ваше ім'я",
     "height": "Зріст (см)",
     "weight": "Вага (кг)",
+    "recordWeight": "Записати вагу в історію",
     "age": "Вік",
     "gender": "Стать",
     "male": "Чоловік",
@@ -61,6 +62,7 @@
   "signOut": "Вийти",
   "toast": {
     "updated": "Профіль оновлено!",
-    "updateFailed": "Не вдалося оновити профіль"
+    "updateFailed": "Не вдалося оновити профіль",
+    "weightRecorded": "Вагу записано!"
   }
 }
