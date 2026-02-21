@@ -16,22 +16,22 @@ export default function Input({
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="block text-sm font-medium text-surface-600">
           {label}
         </label>
       )}
       <input
         id={inputId}
         className={cn(
-          'w-full px-4 py-2.5 border rounded-input transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:shadow-md',
-          error ? 'border-red-500' : 'border-gray-300',
+          'w-full px-4 py-3 bg-surface-50 border rounded-input transition-all duration-200 ease-spring focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent focus:bg-white focus:shadow-glow',
+          error ? 'border-red-400 bg-red-50/30' : 'border-surface-200',
           className
         )}
         {...props}
       />
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-red-500 font-medium">{error}</p>}
     </div>
   );
 }

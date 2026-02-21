@@ -21,7 +21,7 @@ export default function MacroCard({ protein, fat, carbs }: MacroCardProps) {
           label={t('macros.protein')}
           value={protein}
           max={proteinGoal}
-          color="blue"
+          color="indigo"
           size="sm"
         />
         <ProgressBar
@@ -35,7 +35,7 @@ export default function MacroCard({ protein, fat, carbs }: MacroCardProps) {
           label={t('macros.carbs')}
           value={carbs}
           max={carbsGoal}
-          color="green"
+          color="primary"
           size="sm"
         />
       </div>

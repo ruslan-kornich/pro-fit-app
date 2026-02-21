@@ -49,7 +49,7 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mb-6">{t('register.title')}</h2>
+      <h2 className="text-2xl font-bold text-center mb-6 text-surface-900 tracking-tight">{t('register.title')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label={t('register.email')}
@@ -79,9 +79,9 @@ export default function RegisterPage() {
           {t('register.submit')}
         </Button>
       </form>
-      <p className="text-center mt-4 text-gray-600">
+      <p className="text-center mt-5 text-surface-500 text-sm">
         {t('register.hasAccount')}{' '}
-        <Link to="/login" className="text-primary-500 hover:underline">
+        <Link to="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
           {t('register.signIn')}
         </Link>
       </p>

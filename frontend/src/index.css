@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,11 @@
 
 :root {
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --primary: #3B82F6;
+  --primary-dark: #2563EB;
+  --primary-light: #60A5FA;
+  --accent: #06B6D4;
+  --surface: #F8FAFC;
 }
 
 html, body, #root {
@@ -15,70 +20,106 @@ html, body, #root {
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  @apply bg-surface-50 text-surface-900 antialiased;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 50%, #EFF6FF 100%);
+  background-attachment: fixed;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-button font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply px-5 py-2.5 rounded-button font-semibold transition-all duration-200 ease-spring focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
 
   .btn-primary {
-    @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-button;
+    @apply text-white shadow-button hover:shadow-button-hover;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   }
 
   .btn-gradient {
-    @apply text-white focus:ring-primary-500 shadow-button;
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    @apply text-white shadow-button hover:shadow-button-hover;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #06B6D4 100%);
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+    @apply bg-surface-100 text-surface-800 hover:bg-surface-200 focus:ring-surface-400;
   }
 
   .btn-outline {
-    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500;
+    @apply border-2 border-primary-500 text-primary-600 hover:bg-primary-50 focus:ring-primary-500;
+  }
+
+  .btn-accent {
+    @apply text-white shadow-lg;
+    background: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow duration-200;
+    @apply w-full px-4 py-3 bg-white border border-surface-200 rounded-input transition-all duration-200 ease-spring focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent focus:shadow-glow;
   }
 
   .card {
-    @apply bg-white rounded-card shadow-card p-4 transition-shadow duration-250;
+    @apply bg-white rounded-card shadow-card p-4 transition-all duration-250 ease-spring border border-surface-100/60;
   }
 
   .card-hover {
-    @apply hover:shadow-card-hover;
+    @apply hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40;
   }
 
   .gradient-primary {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #06B6D4 100%);
   }
 
   .gradient-primary-light {
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
+  }
+
+  .tab-pill {
+    @apply px-4 py-2 rounded-pill text-sm font-medium transition-all duration-200 ease-spring;
+  }
+
+  .tab-pill-active {
+    @apply bg-white text-surface-900 shadow-card;
+  }
+
+  .tab-pill-inactive {
+    @apply text-surface-500 hover:text-surface-700;
   }
 }
 
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 0.2s ease-out;
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
+      transform: translateY(0);
     }
   }
 
@@ -89,6 +130,16 @@ body {
     to {
       transform: translateY(0);
     }
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #06B6D4 100%);
+  }
+
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
   }
 }
 
@@ -101,4 +152,14 @@ body {
 .camera-overlay button {
   -webkit-touch-callout: none;
   touch-action: manipulation;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }

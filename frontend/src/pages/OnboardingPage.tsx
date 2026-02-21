@@ -291,29 +291,33 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="h-full bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex items-center justify-center">
+      <div className="h-full bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 flex items-center justify-center">
         <Loading size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="h-full bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 flex flex-col overflow-hidden">
-      <div className="p-4 pt-8 flex-shrink-0">
+    <div className="h-full bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 flex flex-col overflow-hidden relative">
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+      }} />
+
+      <div className="p-4 pt-8 flex-shrink-0 relative z-10">
         <OnboardingProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-4 overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center px-4 overflow-y-auto relative z-10">
         <div className="animate-fadeIn" key={currentStep}>{renderStep()}</div>
       </div>
 
-      <div className="px-4 pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] flex gap-3 flex-shrink-0">
+      <div className="px-4 pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] flex gap-3 flex-shrink-0 relative z-10">
         {currentStep > 1 && (
           <button
             type="button"
             onClick={handleBack}
             disabled={saving}
-            className="flex-1 py-4 px-6 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-all disabled:opacity-50"
+            className="flex-1 py-4 px-6 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-[16px] font-semibold transition-all disabled:opacity-50 active:scale-[0.97]"
           >
             {t('back')}
           </button>
@@ -322,7 +326,7 @@ export default function OnboardingPage() {
           type="button"
           onClick={currentStep === TOTAL_STEPS ? handleFinish : handleNext}
           disabled={saving}
-          className="flex-1 py-4 px-6 bg-white text-primary-600 rounded-xl font-semibold transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-4 px-6 bg-white text-primary-700 rounded-[16px] font-bold transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2 shadow-float active:scale-[0.97]"
         >
           {saving && (
             <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">

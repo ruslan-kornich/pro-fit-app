@@ -6,7 +6,7 @@ interface ProgressBarProps {
   label?: string;
   emoji?: string;
   showValue?: boolean;
-  color?: 'primary' | 'green' | 'yellow' | 'red' | 'blue' | 'gradient';
+  color?: 'primary' | 'green' | 'yellow' | 'red' | 'blue' | 'indigo' | 'gradient';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -24,12 +24,13 @@ export default function ProgressBar({
   const percentage = Math.min((value / max) * 100, 100);
 
   const colors = {
-    primary: 'bg-primary-500',
-    green: 'bg-green-500',
-    yellow: 'bg-yellow-500',
-    red: 'bg-red-500',
-    blue: 'bg-blue-500',
-    gradient: 'bg-gradient-to-r from-primary-400 to-primary-600',
+    primary: 'bg-gradient-to-r from-primary-500 to-primary-400',
+    green: 'bg-gradient-to-r from-emerald-500 to-emerald-400',
+    yellow: 'bg-gradient-to-r from-amber-500 to-amber-400',
+    red: 'bg-gradient-to-r from-red-500 to-red-400',
+    blue: 'bg-gradient-to-r from-blue-500 to-blue-400',
+    indigo: 'bg-gradient-to-r from-indigo-500 to-indigo-400',
+    gradient: 'bg-gradient-to-r from-primary-600 via-primary-400 to-primary-300',
   };
 
   const sizes = {
@@ -43,21 +44,21 @@ export default function ProgressBar({
       {(label || showValue) && (
         <div className="flex justify-between items-center mb-1.5">
           {label && (
-            <span className="text-sm font-medium text-gray-700">
-              {emoji && <span className="mr-1">{emoji}</span>}
+            <span className="text-sm font-medium text-surface-700">
+              {emoji && <span className="mr-1.5">{emoji}</span>}
               {label}
             </span>
           )}
           {showValue && (
-            <span className="text-sm text-gray-500">
-              {value.toFixed(0)} / {max.toFixed(0)}
+            <span className="text-sm font-medium text-surface-500">
+              {value.toFixed(0)}<span className="text-surface-300 mx-0.5">/</span>{max.toFixed(0)}
             </span>
           )}
         </div>
       )}
-      <div className={cn('w-full bg-gray-100 rounded-[10px] overflow-hidden', sizes[size])}>
+      <div className={cn('w-full bg-surface-100 rounded-pill overflow-hidden', sizes[size])}>
         <div
-          className={cn('h-full rounded-[10px] transition-all duration-300', colors[color])}
+          className={cn('h-full rounded-pill transition-all duration-500 ease-spring', colors[color])}
           style={{ width: `${percentage}%` }}
         />
       </div>

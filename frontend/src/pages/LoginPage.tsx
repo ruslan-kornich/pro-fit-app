@@ -40,7 +40,7 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mb-6">{t('login.title')}</h2>
+      <h2 className="text-2xl font-bold text-center mb-6 text-surface-900 tracking-tight">{t('login.title')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label={t('login.email')}
@@ -62,9 +62,9 @@ export default function LoginPage() {
           {t('login.submit')}
         </Button>
       </form>
-      <p className="text-center mt-4 text-gray-600">
+      <p className="text-center mt-5 text-surface-500 text-sm">
         {t('login.noAccount')}{' '}
-        <Link to="/register" className="text-primary-500 hover:underline">
+        <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold">
           {t('login.signUp')}
         </Link>
       </p>
