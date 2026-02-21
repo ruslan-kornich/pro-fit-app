@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import BottomNavigation from '../components/BottomNavigation';
+import InstallPrompt from '../components/InstallPrompt';
 
 export default function MainLayout() {
   return (
@@ -9,6 +10,7 @@ export default function MainLayout() {
           <Outlet />
         </div>
       </main>
+      <InstallPrompt />
       <BottomNavigation />
     </div>
   );

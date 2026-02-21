@@ -29,5 +29,11 @@
     "success": "Success",
     "error": "Error"
   },
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "pwa": {
+    "title": "Install ProFit",
+    "description": "Add to home screen for quick access",
+    "iosHint": "Tap Share, then \"Add to Home Screen\"",
+    "install": "Install"
+  }
 }
