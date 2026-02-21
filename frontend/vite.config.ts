@@ -11,12 +11,29 @@ export default defineConfig({
         name: 'ProFit - Calorie Tracker',
         short_name: 'ProFit',
         description: 'AI-powered calorie tracker. Snap a photo of your meal and get instant nutritional analysis.',
-        theme_color: '#22c55e',
+        theme_color: '#2563EB',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
         scope: '/',
+        id: '/',
+        screenshots: [
+          {
+            src: 'screenshot-mobile.png',
+            sizes: '1080x1920',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'ProFit - Calorie Tracker',
+          },
+          {
+            src: 'screenshot-desktop.png',
+            sizes: '1920x1080',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'ProFit - Calorie Tracker',
+          },
+        ],
         icons: [
           {
             src: 'pwa-64x64.png',

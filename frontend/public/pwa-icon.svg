@@ -1,4 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="64" fill="#22c55e"/>
-  <text x="256" y="380" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="360" fill="white">P</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E40AF"/>
+      <stop offset="45%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="ring-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#A5F3FC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- Subtle top-left light reflection -->
+  <ellipse cx="180" cy="160" rx="200" ry="180" fill="white" opacity="0.06"/>
+
+  <!-- Background ring (full, faded) -->
+  <circle cx="256" cy="260" r="148" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="22"/>
+
+  <!-- Progress arc (~75%) -->
+  <circle cx="256" cy="260" r="148" fill="none" stroke="url(#ring-glow)" stroke-width="22"
+          stroke-dasharray="697 233" stroke-linecap="round"
+          transform="rotate(-90 256 260)" opacity="0.9"/>
+
+  <!-- Lightning bolt icon -->
+  <g transform="translate(256 260) scale(8.5) translate(-12 -12)" fill="white" opacity="0.95">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+  </g>
 </svg>
