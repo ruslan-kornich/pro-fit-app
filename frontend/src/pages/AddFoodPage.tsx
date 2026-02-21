@@ -265,10 +265,10 @@ export default function AddFoodPage() {
         )}
       </header>
 
-      <div className="flex bg-gray-100 rounded-lg p-1">
+      <div className="flex bg-gray-100 rounded-button p-1">
         <button
           className={cn(
-            'flex-1 py-2 rounded-md text-sm font-medium transition-colors',
+            'flex-1 py-2 rounded-input text-sm font-medium transition-all duration-200',
             activeTab === 'photo'
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-600'
@@ -279,7 +279,7 @@ export default function AddFoodPage() {
         </button>
         <button
           className={cn(
-            'flex-1 py-2 rounded-md text-sm font-medium transition-colors',
+            'flex-1 py-2 rounded-input text-sm font-medium transition-all duration-200',
             activeTab === 'search'
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-600'
@@ -290,7 +290,7 @@ export default function AddFoodPage() {
         </button>
         <button
           className={cn(
-            'flex-1 py-2 rounded-md text-sm font-medium transition-colors',
+            'flex-1 py-2 rounded-input text-sm font-medium transition-all duration-200',
             activeTab === 'manual'
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-600'

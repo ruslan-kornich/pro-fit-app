@@ -60,17 +60,17 @@ export default function CalendarModal({
       <div
         ref={modalRef}
         className={cn(
-          "w-full max-w-lg bg-white rounded-t-2xl p-4 pb-8 animate-slide-up",
+          "w-full max-w-lg bg-white rounded-t-card p-4 pb-8 animate-slide-up shadow-card",
           "transform transition-transform duration-300 ease-out"
         )}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">
-            {t('calendar.title')}
+            📅 {t('calendar.title')}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-button transition-all duration-200"
             aria-label="Close"
           >
             <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@ export default function CalendarModal({
           </button>
         </div>
 
-        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4" />
+        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-4" />
 
         <Calendar
           selectedDate={selectedDate}

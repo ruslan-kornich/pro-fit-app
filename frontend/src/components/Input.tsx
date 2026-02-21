@@ -25,7 +25,7 @@ export default function Input({
       <input
         id={inputId}
         className={cn(
-          'w-full px-4 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+          'w-full px-4 py-2.5 border rounded-input transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:shadow-md',
           error ? 'border-red-500' : 'border-gray-300',
           className
         )}

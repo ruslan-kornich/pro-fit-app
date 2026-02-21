@@ -16,7 +16,6 @@ export default function MacroCard({ protein, fat, carbs }: MacroCardProps) {
 
   return (
     <Card className="py-3">
-      <h3 className="font-medium text-gray-900 mb-3 text-sm">{t('macros.protein')} / {t('macros.fat')} / {t('macros.carbs')}</h3>
       <div className="space-y-3">
         <ProgressBar
           label={t('macros.protein')}

@@ -144,8 +144,8 @@ export default function Calendar({ selectedDate, onSelectDate, daysWithEntries =
               onClick={() => !isFuture && onSelectDate(day)}
               disabled={isFuture}
               className={cn(
-                "aspect-square flex flex-col items-center justify-center rounded-full text-sm transition-colors relative",
-                isSelected && "bg-primary-500 text-white",
+                "aspect-square flex flex-col items-center justify-center rounded-day text-sm transition-all duration-200 relative",
+                isSelected && "bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-button",
                 !isSelected && isCurrentDay && "bg-primary-100 text-primary-700 font-semibold",
                 !isSelected && !isCurrentDay && !isFuture && "hover:bg-gray-100",
                 isFuture && "text-gray-300 cursor-not-allowed"

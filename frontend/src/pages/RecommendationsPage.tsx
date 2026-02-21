@@ -86,7 +86,8 @@ export default function RecommendationsPage() {
       {recommendations && (
         <>
           <div className="grid grid-cols-2 gap-3">
-            <Card className="text-center">
+            <Card className="text-center bg-gradient-to-br from-primary-50 to-primary-100">
+              <span className="text-xl">⭐</span>
               <p className="text-sm text-gray-500 mb-1">{t('balanceScore')}</p>
               <p className={cn('text-3xl font-bold', getScoreColor(recommendations.balance_score))}>
                 {recommendations.balance_score}
@@ -94,6 +95,7 @@ export default function RecommendationsPage() {
               <p className="text-xs text-gray-400">{t('outOf100')}</p>
             </Card>
             <Card className="text-center">
+              <span className="text-xl">🥩</span>
               <p className="text-sm text-gray-500 mb-1">{t('proteinStatus')}</p>
               <p className={cn('text-xl font-bold capitalize', getProteinStatusColor(recommendations.protein_status))}>
                 {getProteinStatusLabel(recommendations.protein_status)}
@@ -102,17 +104,17 @@ export default function RecommendationsPage() {
           </div>
 
           <Card>
-            <h2 className="font-semibold text-gray-900 mb-3">{t('insights')}</h2>
+            <h2 className="font-semibold text-gray-900 mb-3">💡 {t('insights')}</h2>
             <p className="text-gray-600">{recommendations.insights}</p>
           </Card>
 
           <Card>
-            <h2 className="font-semibold text-gray-900 mb-3">{t('recommendations')}</h2>
+            <h2 className="font-semibold text-gray-900 mb-3">📋 {t('recommendations')}</h2>
             <div className="space-y-3">
               {recommendations.recommendations.map((recommendation, index) => (
                 <div key={index} className="flex gap-3">
-                  <div className="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-medium text-primary-600">{index + 1}</span>
+                  <div className="w-7 h-7 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-white">{index + 1}</span>
                   </div>
                   <p className="text-gray-600">{recommendation}</p>
                 </div>
@@ -122,10 +124,8 @@ export default function RecommendationsPage() {
 
           <Card className="bg-gray-50">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="w-8 h-8 bg-yellow-100 rounded-button flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">⚠️</span>
               </div>
               <div>
                 <p className="text-sm text-gray-600">

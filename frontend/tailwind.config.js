@@ -6,6 +6,22 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      borderRadius: {
+        'card': '20px',
+        'button': '16px',
+        'input': '14px',
+        'nav': '24px',
+        'day': '12px',
+      },
+      boxShadow: {
+        'card': '0 2px 8px -2px rgba(0, 0, 0, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.06)',
+        'card-hover': '0 4px 12px -2px rgba(0, 0, 0, 0.12), 0 8px 24px -4px rgba(0, 0, 0, 0.08)',
+        'button': '0 2px 4px -1px rgba(34, 197, 94, 0.2), 0 4px 8px -2px rgba(34, 197, 94, 0.15)',
+        'nav': '0 -4px 16px -4px rgba(0, 0, 0, 0.08)',
+      },
       height: {
         'screen-dvh': '100dvh',
         'screen-svh': '100svh',
@@ -20,12 +36,20 @@ export default {
       },
       animation: {
         fadeIn: 'fadeIn 0.3s ease-out',
+        scaleIn: 'scaleIn 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      transitionDuration: {
+        '250': '250ms',
       },
       colors: {
         primary: {

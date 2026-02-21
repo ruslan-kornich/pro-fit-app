@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,17 +16,23 @@ html, body, #root {
 
 body {
   @apply bg-gray-50 text-gray-900 antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply px-4 py-2 rounded-button font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
 
   .btn-primary {
-    @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
+    @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-button;
+  }
+
+  .btn-gradient {
+    @apply text-white focus:ring-primary-500 shadow-button;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   }
 
   .btn-secondary {
@@ -36,11 +44,23 @@ body {
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2 border border-gray-300 rounded-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow duration-200;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-sm p-4;
+    @apply bg-white rounded-card shadow-card p-4 transition-shadow duration-250;
+  }
+
+  .card-hover {
+    @apply hover:shadow-card-hover;
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  }
+
+  .gradient-primary-light {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
   }
 }
 
