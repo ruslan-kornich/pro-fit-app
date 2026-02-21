@@ -40,10 +40,10 @@ export default function ProfilePage() {
     { value: 1.9, labelKey: 'activityLevel.extraActive', descKey: 'activityLevel.extraActiveDesc' },
   ];
 
-  const GOALS: { value: Goal; labelKey: string; descKey: string }[] = [
-    { value: 'lose', labelKey: 'goal.lose', descKey: 'goal.loseDesc' },
-    { value: 'maintain', labelKey: 'goal.maintain', descKey: 'goal.maintainDesc' },
-    { value: 'gain', labelKey: 'goal.gain', descKey: 'goal.gainDesc' },
+  const GOALS: { value: Goal; labelKey: string; descKey: string; emoji: string }[] = [
+    { value: 'lose', labelKey: 'goal.lose', descKey: 'goal.loseDesc', emoji: '🔥' },
+    { value: 'maintain', labelKey: 'goal.maintain', descKey: 'goal.maintainDesc', emoji: '⚖️' },
+    { value: 'gain', labelKey: 'goal.gain', descKey: 'goal.gainDesc', emoji: '💪' },
   ];
 
   const LANGUAGES: { value: Language; label: string }[] = [
@@ -315,7 +315,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => setGoal(goalOption.value)}
               className={cn(
-                'flex-1 py-3 px-2 rounded-lg border-2 text-center transition-colors',
+                'flex-1 py-3 px-2 rounded-button border-2 text-center transition-all duration-200',
                 goal === goalOption.value
                   ? 'border-primary-500 bg-primary-50'
                   : 'border-gray-200 hover:border-gray-300'
@@ -329,7 +329,7 @@ export default function ProfilePage() {
       </Card>
 
       <Card>
-        <h2 className="font-semibold text-gray-900 mb-4">{t('activityLevel.title')}</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">🏃 {t('activityLevel.title')}</h2>
         <div className="space-y-2">
           {ACTIVITY_LEVELS.map((level) => (
             <button
@@ -337,7 +337,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => setActivityLevel(level.value)}
               className={cn(
-                'w-full text-left p-3 rounded-lg border-2 transition-colors',
+                'w-full text-left p-3 rounded-button border-2 transition-all duration-200',
                 activityLevel === level.value
                   ? 'border-primary-500 bg-primary-50'
                   : 'border-gray-200 hover:border-gray-300'
@@ -351,7 +351,7 @@ export default function ProfilePage() {
       </Card>
 
       <Card>
-        <h2 className="font-semibold text-gray-900 mb-4">{t('language.title')}</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">🌐 {t('language.title')}</h2>
         <div className="flex gap-3">
           {LANGUAGES.map((lang) => (
             <button
@@ -359,7 +359,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => setLanguage(lang.value)}
               className={cn(
-                'flex-1 py-2 px-4 rounded-lg border-2 text-sm font-medium transition-colors',
+                'flex-1 py-2 px-4 rounded-button border-2 text-sm font-medium transition-all duration-200',
                 language === lang.value
                   ? 'border-primary-500 bg-primary-50 text-primary-700'
                   : 'border-gray-300 text-gray-600 hover:border-gray-400'

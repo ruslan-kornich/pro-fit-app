@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import Enum, StrEnum
 
 
-class Gender(str, Enum):
+class Gender(StrEnum):
     MALE = "male"
     FEMALE = "female"
 
@@ -14,7 +14,7 @@ class ActivityLevel(float, Enum):
     EXTRA_ACTIVE = 1.9
 
 
-class Goal(str, Enum):
+class Goal(StrEnum):
     LOSE = "lose"
     MAINTAIN = "maintain"
     GAIN = "gain"

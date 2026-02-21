@@ -102,9 +102,9 @@ export default function StatisticsPage() {
       <div className="flex gap-2">
         <button
           onClick={() => handlePeriodChange('week')}
-          className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
+          className={`flex-1 py-2 px-3 rounded-input font-medium text-sm transition-all duration-200 ${
             period === 'week'
-              ? 'bg-primary-600 text-white'
+              ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-button'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -112,9 +112,9 @@ export default function StatisticsPage() {
         </button>
         <button
           onClick={() => handlePeriodChange('month')}
-          className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
+          className={`flex-1 py-2 px-3 rounded-input font-medium text-sm transition-all duration-200 ${
             period === 'month'
-              ? 'bg-primary-600 text-white'
+              ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-button'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -122,28 +122,26 @@ export default function StatisticsPage() {
         </button>
         <button
           onClick={() => setDateRangeModalOpen(true)}
-          className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-1 ${
+          className={`flex-1 py-2 px-3 rounded-input font-medium text-sm transition-all duration-200 flex items-center justify-center gap-1 ${
             period === 'custom'
-              ? 'bg-primary-600 text-white'
+              ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-button'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          {period === 'custom' ? formatCustomRangeLabel() : t('periods.custom')}
+          📅 {period === 'custom' ? formatCustomRangeLabel() : t('periods.custom')}
         </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Card className="text-center py-3">
+          <span className="text-lg">🔥</span>
           <p className="text-2xl font-bold text-gray-900">
             {Math.round(statistics?.averages.calories || 0)}
           </p>
           <p className="text-xs text-gray-500">{t('summary.avgCalories')}</p>
         </Card>
         <Card className="text-center py-3">
+          <span className="text-lg">📊</span>
           <p className="text-2xl font-bold text-gray-900">
             {statistics?.total_entries || 0}
           </p>
@@ -152,7 +150,7 @@ export default function StatisticsPage() {
       </div>
 
       <Card>
-        <h2 className="font-semibold text-gray-900 mb-3">{t('charts.calories')}</h2>
+        <h2 className="font-semibold text-gray-900 mb-3">🔥 {t('charts.calories')}</h2>
         <BarChart
           data={caloriesData}
           height={200}
@@ -162,15 +160,12 @@ export default function StatisticsPage() {
 
       <Card>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-gray-900">{t('charts.weight')}</h2>
+          <h2 className="font-semibold text-gray-900">⚖️ {t('charts.weight')}</h2>
           <button
             onClick={() => setWeightModalOpen(true)}
-            className="text-primary-600 text-sm font-medium flex items-center gap-1"
+            className="text-primary-600 text-sm font-medium flex items-center gap-1 hover:text-primary-700 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            {t('weight.addButton')}
+            ➕ {t('weight.addButton')}
           </button>
         </div>
         <LineChart
@@ -198,21 +193,24 @@ export default function StatisticsPage() {
       </Card>
 
       <Card>
-        <h2 className="font-semibold text-gray-900 mb-3">{t('macros.title')}</h2>
+        <h2 className="font-semibold text-gray-900 mb-3">📊 {t('macros.title')}</h2>
         <div className="grid grid-cols-3 gap-3">
-          <div className="text-center p-2 bg-red-50 rounded-lg">
+          <div className="text-center p-2 bg-red-50 rounded-button">
+            <span className="text-lg">🥩</span>
             <p className="text-lg font-bold text-red-600">
               {statistics?.averages.protein.toFixed(0) || 0}g
             </p>
             <p className="text-xs text-gray-500">{t('macros.protein')}</p>
           </div>
-          <div className="text-center p-2 bg-yellow-50 rounded-lg">
+          <div className="text-center p-2 bg-yellow-50 rounded-button">
+            <span className="text-lg">🥑</span>
             <p className="text-lg font-bold text-yellow-600">
               {statistics?.averages.fat.toFixed(0) || 0}g
             </p>
             <p className="text-xs text-gray-500">{t('macros.fat')}</p>
           </div>
-          <div className="text-center p-2 bg-blue-50 rounded-lg">
+          <div className="text-center p-2 bg-blue-50 rounded-button">
+            <span className="text-lg">🍞</span>
             <p className="text-lg font-bold text-blue-600">
               {statistics?.averages.carbs.toFixed(0) || 0}g
             </p>

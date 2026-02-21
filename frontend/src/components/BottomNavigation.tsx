@@ -62,7 +62,7 @@ export default function BottomNavigation() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 pb-safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white rounded-t-nav shadow-nav pb-safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -75,7 +75,7 @@ export default function BottomNavigation() {
                 to={item.path}
                 className="flex items-center justify-center -mt-5"
               >
-                <div className="w-14 h-14 bg-primary-500 rounded-full flex items-center justify-center text-white shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white shadow-lg transition-transform duration-200 active:scale-95 hover:shadow-xl">
                   {item.icon}
                 </div>
               </Link>
@@ -87,12 +87,12 @@ export default function BottomNavigation() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 h-full',
+                'flex flex-col items-center justify-center flex-1 h-full transition-colors duration-200',
                 isActive ? 'text-primary-500' : 'text-gray-500'
               )}
             >
               {item.icon}
-              <span className="text-xs mt-1">{t(item.labelKey)}</span>
+              <span className="text-xs mt-1 font-medium">{t(item.labelKey)}</span>
             </Link>
           );
         })}
