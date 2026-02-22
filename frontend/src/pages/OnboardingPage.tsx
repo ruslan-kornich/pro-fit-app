@@ -298,12 +298,12 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="h-full bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 flex flex-col overflow-hidden relative">
+    <div className="h-full bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 flex flex-col overflow-hidden relative pt-safe-top">
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
       }} />
 
-      <div className="p-4 pt-8 flex-shrink-0 relative z-10">
+      <div className="p-4 pt-4 flex-shrink-0 relative z-10">
         <OnboardingProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
       </div>
 

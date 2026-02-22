@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import { useAuth } from './features/auth/AuthContext';
 import { useLanguageSync } from './i18n/useLanguageSync';
 import ProtectedRoute from './features/auth/ProtectedRoute';
@@ -15,9 +16,23 @@ import ProfilePage from './pages/ProfilePage';
 import RecommendationsPage from './pages/RecommendationsPage';
 import StatisticsPage from './pages/StatisticsPage';
 
+const UPDATE_INTERVAL = 60 * 60 * 1000;
+
 export default function App() {
   const { isAuthenticated, loading } = useAuth();
   useLanguageSync();
+  useRegisterSW({
+    onRegisteredSW(_swUrl, registration) {
+      if (registration) {
+        setInterval(() => {
+          registration.update();
+        }, UPDATE_INTERVAL);
+      }
+    },
+    onRegisterError(error) {
+      console.error('SW registration error:', error);
+    },
+  });
 
   if (loading) {
     return (
