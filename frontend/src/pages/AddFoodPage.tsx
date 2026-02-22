@@ -286,7 +286,7 @@ export default function AddFoodPage() {
   ];
 
   return (
-    <div className="p-4 space-y-4 pb-[calc(env(safe-area-inset-bottom,0px)+6rem)] animate-fade-in">
+    <div className="p-4 space-y-4 animate-fade-in">
       <header className="flex items-center justify-between pt-1">
         <h1 className="text-xl font-bold text-surface-900 tracking-tight">{t('addFood.title')}</h1>
         {(previewUrl || name || selectedSearchResult) && (
