@@ -20,6 +20,12 @@ html, body, #root {
   overflow: hidden;
 }
 
+@media (display-mode: standalone) {
+  html, body, #root {
+    height: 100%;
+  }
+}
+
 body {
   @apply bg-surface-50 text-surface-900 antialiased;
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
