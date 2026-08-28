@@ -168,7 +168,7 @@ export default function DashboardPage() {
               <p className="text-[10px] text-surface-400 font-medium uppercase tracking-wide">{t('lastMeal')}</p>
               <p className="font-semibold text-surface-900 text-sm truncate">{lastEntry.name}</p>
               <p className="text-xs text-surface-500">
-                {lastEntry.calories} {t('calories.of', { ns: 'common' })} · {formatTime(lastEntry.created_at)}
+                {lastEntry.calories} {t('units.kcal', { ns: 'common' })} · {formatTime(lastEntry.created_at)}
               </p>
             </div>
           </div>
