@@ -24,6 +24,19 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10MB
 
+    # Uploads go to an S3-compatible bucket when S3_BUCKET is set, otherwise
+    # to UPLOAD_DIR on the local filesystem.
+    S3_BUCKET: str = ""
+    S3_ENDPOINT_URL: str = ""
+    S3_ACCESS_KEY_ID: str = ""
+    S3_SECRET_ACCESS_KEY: str = ""
+    S3_REGION: str = "us-east-1"
+    S3_ADDRESSING_STYLE: str = "path"
+    # Set for a public bucket to serve stable, cacheable URLs; when empty the
+    # app hands out short-lived presigned URLs instead.
+    S3_PUBLIC_BASE_URL: str = ""
+    S3_PRESIGNED_URL_TTL: int = 3600
+
     class Config:
         env_file = ".env"
         extra = "ignore"

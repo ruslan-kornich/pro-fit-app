@@ -2,11 +2,13 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
 
 from app.config.settings import settings
+from app.utils.file_upload import is_safe_key
+from app.utils.storage import get_storage
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,7 +26,8 @@ from app.routers import (  # noqa: E402
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    if not settings.S3_BUCKET:
+        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     yield
 
 
@@ -48,7 +51,27 @@ app.include_router(onboarding_router, prefix=settings.API_PREFIX)
 app.include_router(weight_router, prefix=settings.API_PREFIX)
 app.include_router(statistics_router, prefix=settings.API_PREFIX)
 
-app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+
+@app.get("/uploads/{key:path}", name="uploads")
+async def serve_upload(key: str):
+    """Serve an upload from whichever backend stored it.
+
+    Entries keep an app-relative photo_url, so rows written before the move to
+    object storage still resolve after it.
+    """
+    if not is_safe_key(key):
+        raise HTTPException(status_code=404, detail="Not found")
+
+    storage = get_storage()
+
+    url = storage.url_for(key)
+    if url:
+        return RedirectResponse(url, status_code=307)
+
+    path = storage.local_path(key)
+    if path is None or not path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    return FileResponse(path)
 
 
 @app.get("/health")

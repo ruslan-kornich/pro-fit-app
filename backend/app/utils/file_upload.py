@@ -1,16 +1,15 @@
-import os
 import uuid
-from pathlib import Path
+from pathlib import PurePosixPath
 
-import aiofiles
 from fastapi import UploadFile
 
 from app.config.settings import settings
+from app.utils.storage import get_storage
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-# Public prefix of the StaticFiles mount in app.main; it is independent of
-# UPLOAD_DIR, which may point at any directory such as a mounted volume.
+# Public prefix of the upload route in app.main. It is independent of the
+# storage backend so stored URLs survive a move between disk and a bucket.
 UPLOAD_URL_PREFIX = "/uploads"
 
 
@@ -22,15 +21,18 @@ def is_allowed_file(filename: str) -> bool:
     return get_file_extension(filename) in ALLOWED_EXTENSIONS
 
 
-def build_upload_url(unique_filename: str, subfolder: str = "") -> str:
-    parts = [UPLOAD_URL_PREFIX, subfolder, unique_filename] if subfolder else [UPLOAD_URL_PREFIX, unique_filename]
-    return "/".join(parts)
+def build_upload_url(key: str) -> str:
+    return f"{UPLOAD_URL_PREFIX}/{key}"
 
 
-def resolve_upload_path(upload_url: str) -> Path:
-    """Map a public upload URL back to its location on disk."""
-    relative = upload_url.removeprefix(UPLOAD_URL_PREFIX).lstrip("/")
-    return Path(settings.UPLOAD_DIR) / relative
+def url_to_key(upload_url: str) -> str:
+    """Map a public upload URL back to its storage key."""
+    return upload_url.removeprefix(UPLOAD_URL_PREFIX).lstrip("/")
+
+
+def is_safe_key(key: str) -> bool:
+    """Reject keys that could escape the storage root."""
+    return bool(key) and ".." not in PurePosixPath(key).parts and not key.startswith("/")
 
 
 async def save_upload_file(file: UploadFile, subfolder: str = "") -> str:
@@ -43,33 +45,22 @@ async def save_upload_file(file: UploadFile, subfolder: str = "") -> str:
     if not is_allowed_file(file.filename):
         raise ValueError(f"File type not allowed. Allowed types: {ALLOWED_EXTENSIONS}")
 
+    content = await file.read()
+    if len(content) > settings.MAX_UPLOAD_SIZE:
+        raise ValueError(f"File too large. Max size: {settings.MAX_UPLOAD_SIZE / 1024 / 1024}MB")
+
     extension = get_file_extension(file.filename)
     unique_filename = f"{uuid.uuid4()}.{extension}"
+    key = f"{subfolder}/{unique_filename}" if subfolder else unique_filename
 
-    upload_dir = Path(settings.UPLOAD_DIR)
-    if subfolder:
-        upload_dir = upload_dir / subfolder
+    await get_storage().save(key, content)
 
-    upload_dir.mkdir(parents=True, exist_ok=True)
-
-    file_path = upload_dir / unique_filename
-
-    async with aiofiles.open(file_path, "wb") as buffer:
-        content = await file.read()
-        if len(content) > settings.MAX_UPLOAD_SIZE:
-            raise ValueError(f"File too large. Max size: {settings.MAX_UPLOAD_SIZE / 1024 / 1024}MB")
-        await buffer.write(content)
-
-    return build_upload_url(unique_filename, subfolder)
+    return build_upload_url(key)
 
 
 async def delete_upload_file(upload_url: str) -> bool:
     """Delete an uploaded file addressed by its public URL."""
-    try:
-        file_path = resolve_upload_path(upload_url)
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            return True
-    except Exception:
-        pass
-    return False
+    key = url_to_key(upload_url)
+    if not is_safe_key(key):
+        return False
+    return await get_storage().delete(key)
