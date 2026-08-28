@@ -1,0 +1,36 @@
+# VCS / editors
+.git
+.gitignore
+.github
+.idea
+.vscode
+.claude
+**/.claude
+
+# Local secrets and runtime state
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Dependencies and build output (rebuilt inside the image)
+**/node_modules
+frontend/dist
+backend/.venv
+venv
+**/__pycache__
+**/*.pyc
+**/.ruff_cache
+**/.mypy_cache
+**/.pytest_cache
+**/*.tsbuildinfo
+
+# Locally uploaded meal photos never belong in the image
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Repo assets not needed at runtime
+CLAUDE.md
+docker-compose.yml
+backend/Dockerfile
+frontend/Dockerfile
+frontend/nginx.conf
